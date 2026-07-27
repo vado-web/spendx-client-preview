@@ -268,7 +268,8 @@ input:focus-visible {
   flex-direction: column;
   min-height: 100%;
   padding: 60px 28px 26px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   color: #fff;
   background:
     radial-gradient(circle at 75% 28%, rgba(83, 123, 255, 0.72), transparent 310px),
@@ -353,6 +354,7 @@ input:focus-visible {
 
 .welcome-art {
   position: relative;
+  flex: 0 0 218px;
   height: 218px;
   margin: 6px -6px 0;
 }
@@ -400,7 +402,7 @@ input:focus-visible {
 .welcome-copy {
   position: relative;
   z-index: 2;
-  margin-top: -4px;
+  margin-top: 14px;
 }
 
 .eyebrow--light {
