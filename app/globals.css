@@ -1427,7 +1427,7 @@ input:focus-visible {
 .benefit-list > div {
   min-height: 50px;
   display: grid;
-  grid-template-columns: 34px 1fr auto;
+  grid-template-columns: 34px minmax(0, 1fr);
   align-items: center;
   gap: 9px;
   font-size: 12px;
@@ -1441,20 +1441,49 @@ input:focus-visible {
   color: var(--blue);
 }
 
+.benefit-list > div > div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
 .benefit-list strong {
+  display: block;
   font-size: 11px;
+  line-height: 1.25;
+}
+
+.benefit-list small {
+  display: block;
+  color: #6f7e93;
+  font-size: 10px;
+  line-height: 1.35;
 }
 
 .order-total {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
   margin: 16px 2px;
   color: #637188;
   font-size: 12px;
 }
 
+.order-total > span,
+.order-total strong {
+  white-space: nowrap;
+}
+
+.order-total p {
+  margin: 0;
+  line-height: 1.45;
+}
+
 .order-total strong {
   color: var(--ink);
+  font-size: 15px;
+  text-align: right;
 }
 
 .payment-title {

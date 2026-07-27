@@ -851,11 +851,9 @@ function ProductScreen({
         </div>
 
         <div className="order-total">
-          <div>
-            <span>Due now</span>
-            <strong>{plan.issueFee}</strong>
-          </div>
+          <span>Due now</span>
           <p>Card issue fee only. Initial funding is handled separately.</p>
+          <strong>{plan.issueFee}</strong>
         </div>
 
         <button className="primary-button" onClick={onOrder} type="button">
@@ -1447,9 +1445,8 @@ export default function Home() {
   const orderedPlan = plans[orderedPlanIndex ?? activePlanIndex] ?? plans[3];
 
   useEffect(() => {
-    frameRef.current
-      ?.querySelector<HTMLElement>(".screen")
-      ?.scrollTo({ top: 0, behavior: "auto" });
+    const currentScreen = frameRef.current?.querySelector<HTMLElement>(".screen");
+    if (currentScreen) currentScreen.scrollTop = 0;
   }, [screen]);
 
   const navigate = (next: Screen) => {
@@ -1461,7 +1458,7 @@ export default function Home() {
   const completePayment = () => {
     setOrderedPlanIndex(activePlanIndex);
     setHasOrder(true);
-    navigate("tracking");
+    setScreen("tracking");
   };
 
   const previewScreens: Screen[] = [
