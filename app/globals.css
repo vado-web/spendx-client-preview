@@ -1043,16 +1043,7 @@ input:focus-visible {
 }
 
 .card-stage::before {
-  content: "";
-  position: absolute;
-  width: 260px;
-  height: 175px;
-  left: 50%;
-  top: 29px;
-  border-radius: 50%;
-  transform: translateX(-50%);
-  background: rgba(48, 52, 168, 0.22);
-  filter: blur(34px);
+  display: none;
 }
 
 .card-gallery {
@@ -1075,20 +1066,19 @@ input:focus-visible {
 
 .gallery-card {
   position: absolute;
-  top: 0;
+  top: 4px;
   left: 50%;
   width: 96%;
   aspect-ratio: 1.586;
   padding: 0;
   border: 0;
   background: transparent;
-  filter: drop-shadow(0 16px 17px rgba(12, 25, 54, 0.16));
+  filter: none;
   transform-origin: 50% 65%;
   transform-style: preserve-3d;
   transition:
     transform 480ms cubic-bezier(0.2, 0.82, 0.2, 1),
-    opacity 360ms ease,
-    filter 420ms ease;
+    opacity 360ms ease;
   will-change: transform, opacity;
   -webkit-tap-highlight-color: transparent;
 }
@@ -1103,15 +1093,13 @@ input:focus-visible {
 }
 
 .card-gallery.is-dragging .gallery-card {
-  transition:
-    opacity 160ms ease,
-    filter 160ms ease;
+  transition: opacity 160ms ease;
 }
 
 .gallery-card--active {
   z-index: 4;
   opacity: 1;
-  filter: drop-shadow(0 24px 22px rgba(12, 25, 54, 0.23));
+  filter: none;
   transform: translate3d(calc(-50% + var(--drag-x)), 0, 25px) scale(1) rotateY(0);
 }
 
@@ -1120,7 +1108,7 @@ input:focus-visible {
   z-index: 2;
   opacity: 0;
   pointer-events: none;
-  filter: saturate(0.9) brightness(0.97) drop-shadow(0 13px 14px rgba(12, 25, 54, 0.13));
+  filter: saturate(0.9) brightness(0.97);
 }
 
 .gallery-card--previous {
@@ -1164,7 +1152,7 @@ input:focus-visible {
   grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 12px;
-  margin-top: -2px;
+  margin-top: 0;
 }
 
 .card-stage__controls > button {
@@ -1559,12 +1547,21 @@ input:focus-visible {
 
 .address-card__icon {
   width: 42px;
-  height: 42px;
+  height: 48px;
   display: grid;
+  grid-template-rows: 30px auto;
   place-items: center;
+  gap: 1px;
   color: var(--blue);
   border-radius: 13px;
   background: #edf1ff;
+}
+
+.address-card__icon small {
+  font-size: 7px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: 0.08em;
 }
 
 .address-card__copy {
@@ -1590,15 +1587,20 @@ input:focus-visible {
 }
 
 .address-card button {
-  width: 35px;
-  height: 35px;
-  display: grid;
-  place-items: center;
-  padding: 0;
+  min-width: 68px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 10px;
   color: var(--blue);
   border: 0;
   border-radius: 11px;
   background: #f0f4fb;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .payment-notice {
@@ -2416,12 +2418,12 @@ input:focus-visible {
   }
 
   .gallery-card {
-    top: 0;
+    top: 4px;
     width: 96%;
   }
 
   .card-stage__controls {
-    margin-top: -2px;
+    margin-top: 0;
   }
 
   .plan-summary {
@@ -2543,7 +2545,7 @@ input:focus-visible {
   }
 
   .card-stage__controls {
-    margin-top: -2px;
+    margin-top: 0;
   }
 
   .plan-summary__heading {

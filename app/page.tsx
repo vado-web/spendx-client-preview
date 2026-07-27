@@ -40,6 +40,7 @@ import {
   type FormEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -937,17 +938,17 @@ function PaymentScreen({
 
         <div className="address-card">
           <div className="address-card__icon">
-            <ScanFace size={34} />
+            <ScanFace size={28} />
             <small>DEMO</small>
           </div>
           <div className="address-card__copy">
             <span>{chain} deposit address</span>
             <strong>TDEMO9K3...3P8X</strong>
-            <button onClick={copyAddress} type="button">
-              {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? "Copied" : "Copy address"}
-            </button>
           </div>
+          <button aria-label="Copy deposit address" onClick={copyAddress} type="button">
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? "Copied" : "Copy"}
+          </button>
         </div>
 
         <div className="payment-notice">
@@ -1427,9 +1428,14 @@ export default function Home() {
   const activePlan = plans[activePlanIndex] ?? plans[3];
   const orderedPlan = plans[orderedPlanIndex ?? activePlanIndex] ?? plans[3];
 
+  useEffect(() => {
+    frameRef.current
+      ?.querySelector<HTMLElement>(".screen")
+      ?.scrollTo({ top: 0, behavior: "auto" });
+  }, [screen]);
+
   const navigate = (next: Screen) => {
     setScreen(next);
-    frameRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const goBack = () => navigate(backMap[screen] ?? "welcome");
