@@ -93,6 +93,10 @@ input:focus-visible {
   margin-bottom: 52px;
 }
 
+.preview-context .brand-mark img {
+  filter: none;
+}
+
 .preview-context h2 {
   max-width: 410px;
   margin: 18px 0 18px;
@@ -137,6 +141,22 @@ input:focus-visible {
   color: #6c7890;
   font-size: 11px;
   transition: 180ms ease;
+}
+
+.preview-context__steps button span,
+.preview-context__steps button strong {
+  display: block;
+}
+
+.preview-context__steps button span {
+  margin-bottom: 4px;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.preview-context__steps button strong {
+  font-size: 11px;
+  font-weight: 680;
 }
 
 .preview-context__steps button:hover,

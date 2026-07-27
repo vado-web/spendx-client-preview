@@ -1338,12 +1338,13 @@ export default function Home() {
           {["Welcome", "Verify", "Choose", "Pay", "Track", "Manage"].map(
             (item, index) => (
               <button
+                className={screen === previewScreens[index] ? "is-active" : ""}
                 key={item}
                 onClick={() => navigate(previewScreens[index] ?? "welcome")}
                 type="button"
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                {item}
+                <strong>{item}</strong>
               </button>
             ),
           )}
