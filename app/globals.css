@@ -1077,7 +1077,7 @@ input:focus-visible {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 100%;
+  width: 96%;
   aspect-ratio: 1.586;
   padding: 0;
   border: 0;
@@ -1164,7 +1164,7 @@ input:focus-visible {
   grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 12px;
-  margin-top: -6px;
+  margin-top: -2px;
 }
 
 .card-stage__controls > button {
@@ -1383,8 +1383,11 @@ input:focus-visible {
 
 .product-hero__badge {
   position: absolute;
-  right: 38px;
-  bottom: 15px;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 6px 9px;
   border-radius: 99px;
   color: #fff;
@@ -2414,11 +2417,11 @@ input:focus-visible {
 
   .gallery-card {
     top: 0;
-    width: 100%;
+    width: 96%;
   }
 
   .card-stage__controls {
-    margin-top: -6px;
+    margin-top: -2px;
   }
 
   .plan-summary {
@@ -2540,7 +2543,7 @@ input:focus-visible {
   }
 
   .card-stage__controls {
-    margin-top: -6px;
+    margin-top: -2px;
   }
 
   .plan-summary__heading {

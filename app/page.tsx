@@ -799,11 +799,11 @@ function ProductScreen({
           <span className="product-hero__glow" />
           <div className="product-hero__image">
             <SpendXCard plan={plan} />
+            <span className="product-hero__badge">
+              <BadgeCheck size={16} />
+              Available
+            </span>
           </div>
-          <span className="product-hero__badge">
-            <BadgeCheck size={16} />
-            Available
-          </span>
         </div>
 
         <div className="product-title">
