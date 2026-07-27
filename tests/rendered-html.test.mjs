@@ -32,8 +32,8 @@ test("server-renders the SpendX mobile demo", async () => {
   assert.match(html, /<title>SpendX — Mobile Experience Concept<\/title>/i);
   assert.match(html, /data-testid="welcome-screen"/);
   assert.match(html, /One card\./);
-  assert.match(html, /\/brand\/card-plus\.png/);
-  assert.match(html, /\/brand\/card-supreme\.png/);
+  assert.match(html, /\/brand\/card-plus-figma\.png/);
+  assert.match(html, /\/brand\/card-supreme-figma\.png/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 
@@ -42,8 +42,8 @@ test("uses the supplied card artwork for every card product", async () => {
   const names = ["essential", "plus", "prime", "supreme", "business"];
 
   for (const name of names) {
-    assert.match(page, new RegExp(`image: "/brand/card-${name}\\.png"`));
-    await access(new URL(`../public/brand/card-${name}.png`, import.meta.url));
+    assert.match(page, new RegExp(`image: "/brand/card-${name}-figma\\.png"`));
+    await access(new URL(`../public/brand/card-${name}-figma.png`, import.meta.url));
   }
 
   assert.match(page, /className="spendx-card__image"/);

@@ -74,7 +74,7 @@ const plans: Plan[] = [
   {
     code: "essential",
     name: "Essential",
-    image: "/brand/card-essential.png",
+    image: "/brand/card-essential-figma.png",
     issueFee: "$25",
     dailyLimit: "$2,500",
     monthlyLimit: "$75,000",
@@ -85,7 +85,7 @@ const plans: Plan[] = [
   {
     code: "plus",
     name: "Plus",
-    image: "/brand/card-plus.png",
+    image: "/brand/card-plus-figma.png",
     issueFee: "$35",
     dailyLimit: "$5,000",
     monthlyLimit: "$150,000",
@@ -96,7 +96,7 @@ const plans: Plan[] = [
   {
     code: "prime",
     name: "Prime",
-    image: "/brand/card-prime.png",
+    image: "/brand/card-prime-figma.png",
     issueFee: "$75",
     dailyLimit: "$20,000",
     monthlyLimit: "$600,000",
@@ -107,7 +107,7 @@ const plans: Plan[] = [
   {
     code: "supreme",
     name: "Supreme",
-    image: "/brand/card-supreme.png",
+    image: "/brand/card-supreme-figma.png",
     issueFee: "$150",
     dailyLimit: "$100,000",
     monthlyLimit: "$3,000,000",
@@ -118,7 +118,7 @@ const plans: Plan[] = [
   {
     code: "business",
     name: "Business",
-    image: "/brand/card-business.png",
+    image: "/brand/card-business-figma.png",
     issueFee: "$150",
     dailyLimit: "$100,000",
     monthlyLimit: "$3,000,000",
