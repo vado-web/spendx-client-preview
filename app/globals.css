@@ -566,9 +566,7 @@ input:focus-visible {
   border: 0;
   border-radius: 6.4%;
   background: transparent;
-  box-shadow:
-    0 18px 38px rgba(18, 36, 70, 0.16),
-    0 2px 8px rgba(18, 36, 70, 0.08);
+  box-shadow: none;
 }
 
 .spendx-card::before {
