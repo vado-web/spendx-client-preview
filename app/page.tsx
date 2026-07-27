@@ -1063,7 +1063,7 @@ function TrackingScreen({
           <ArrowRight size={18} />
         </button>
       </main>
-      {!sheet && <BottomNav active="cards" hasOrder onNavigate={onNavigate} />}
+      <BottomNav active="cards" hasOrder onNavigate={onNavigate} />
     </section>
   );
 }
@@ -1202,7 +1202,7 @@ function CardScreen({
           </dl>
         </div>
       </main>
-      <BottomNav active="cards" hasOrder onNavigate={onNavigate} />
+      {!sheet && <BottomNav active="cards" hasOrder onNavigate={onNavigate} />}
 
       {sheet && (
         <div className="sheet-backdrop" role="presentation">
