@@ -1107,18 +1107,19 @@ function CardScreen({
   const [sheet, setSheet] = useState<Sheet>(null);
 
   return (
-    <section className="screen screen--blue" data-testid="card-screen">
-      <ScreenHeader
-        label="Cards"
-        onBack={onBack}
-        trailing={
-          <button className="header-link" type="button">
-            <Plus size={18} />
-            Add card
-          </button>
-        }
-      />
-      <main className="screen-content card-dashboard">
+    <>
+      <section className="screen screen--blue" data-testid="card-screen">
+        <ScreenHeader
+          label="Cards"
+          onBack={onBack}
+          trailing={
+            <button className="header-link" type="button">
+              <Plus size={18} />
+              Add card
+            </button>
+          }
+        />
+        <main className="screen-content card-dashboard">
         <div className="card-dashboard__title">
           <span>Your virtual card</span>
           <h2>SpendX {plan.name}</h2>
@@ -1201,8 +1202,9 @@ function CardScreen({
             </div>
           </dl>
         </div>
-      </main>
-      {!sheet && <BottomNav active="cards" hasOrder onNavigate={onNavigate} />}
+        </main>
+        {!sheet && <BottomNav active="cards" hasOrder onNavigate={onNavigate} />}
+      </section>
 
       {sheet && (
         <div className="sheet-backdrop" role="presentation">
@@ -1318,7 +1320,7 @@ function CardScreen({
           </section>
         </div>
       )}
-    </section>
+    </>
   );
 }
 
