@@ -2692,13 +2692,13 @@ input:focus-visible {
 
   .screen--welcome .welcome-copy h1 {
     margin: 9px 0 10px;
-    font-size: 40px;
-    line-height: 0.92;
+    font-size: 44px;
+    line-height: 0.91;
   }
 
   .screen--welcome .welcome-copy p {
-    font-size: 13px;
-    line-height: 1.46;
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .screen--welcome .welcome-actions {
