@@ -493,11 +493,13 @@ function PlanStats({ plan }: { plan: Plan }) {
 
 function CatalogScreen({
   activeIndex,
+  hasOrder,
   onOpenPlan,
   onSelect,
   onNavigate,
 }: {
   activeIndex: number;
+  hasOrder: boolean;
   onOpenPlan: () => void;
   onSelect: (index: number) => void;
   onNavigate: (screen: Screen) => void;
@@ -652,7 +654,7 @@ function CatalogScreen({
           </span>
         </div>
       </main>
-      <BottomNav active="explore" hasOrder={false} onNavigate={onNavigate} />
+      <BottomNav active="explore" hasOrder={hasOrder} onNavigate={onNavigate} />
     </section>
   );
 }
@@ -862,10 +864,12 @@ function PaymentScreen({
 }
 
 function TrackingScreen({
+  plan,
   onBack,
   onPreviewCard,
   onNavigate,
 }: {
+  plan: Plan;
   onBack: () => void;
   onPreviewCard: () => void;
   onNavigate: (screen: Screen) => void;
@@ -886,18 +890,21 @@ function TrackingScreen({
         <div className="order-card">
           <div className="order-card__image">
             <Image
-              alt="SpendX Supreme card"
+              alt={`SpendX ${plan.name} card`}
               fill
               sizes="110px"
-              src="/brand/card-supreme.png"
+              src={plan.image}
               unoptimized
             />
           </div>
-          <div>
+          <div className="order-card__details">
             <span>Order SX-24038</span>
-            <strong>SpendX Supreme</strong>
-            <small>$150 issue fee paid</small>
+            <strong>SpendX {plan.name}</strong>
+            <small>Issue fee paid · {plan.issueFee}</small>
           </div>
+          <span className="order-card__status" aria-label="Payment confirmed">
+            <Check size={15} strokeWidth={3} />
+          </span>
         </div>
 
         <div className="tracking-hero">
@@ -990,9 +997,11 @@ function QuickAction({
 }
 
 function CardScreen({
+  plan,
   onBack,
   onNavigate,
 }: {
+  plan: Plan;
   onBack: () => void;
   onNavigate: (screen: Screen) => void;
 }) {
@@ -1015,16 +1024,16 @@ function CardScreen({
       <main className="screen-content card-dashboard">
         <div className="card-dashboard__title">
           <span>Your virtual card</span>
-          <h2>SpendX Supreme</h2>
+          <h2>SpendX {plan.name}</h2>
         </div>
 
         <div className={frozen ? "managed-card is-frozen" : "managed-card"}>
           <Image
-            alt="SpendX Supreme virtual card"
+            alt={`SpendX ${plan.name} virtual card`}
             fill
             priority
             sizes="380px"
-            src="/brand/card-supreme.png"
+            src={plan.image}
             unoptimized
           />
           {frozen && (
@@ -1206,8 +1215,10 @@ function CardScreen({
 }
 
 function ProfileScreen({
+  hasOrder,
   onNavigate,
 }: {
+  hasOrder: boolean;
   onNavigate: (screen: Screen) => void;
 }) {
   return (
@@ -1241,20 +1252,34 @@ function ProfileScreen({
           <span className="profile-section__label">Account</span>
           <div className="profile-list">
             <button type="button">
-              <span>
-                <BadgeCheck size={19} /> Identity verification
+              <span className="profile-list__icon profile-list__icon--verified">
+                <BadgeCheck size={20} />
               </span>
-              <small>Approved</small>
+              <span className="profile-list__copy">
+                <strong>Identity verification</strong>
+                <small>Your identity check is complete</small>
+              </span>
+              <span className="profile-list__meta profile-list__meta--verified">
+                Approved
+              </span>
             </button>
             <button type="button">
-              <span>
-                <ShieldCheck size={19} /> Security
+              <span className="profile-list__icon">
+                <ShieldCheck size={20} />
+              </span>
+              <span className="profile-list__copy">
+                <strong>Security</strong>
+                <small>Password, PIN and trusted devices</small>
               </span>
               <ChevronRight size={18} />
             </button>
             <button type="button">
-              <span>
-                <Fingerprint size={19} /> Face ID
+              <span className="profile-list__icon">
+                <Fingerprint size={20} />
+              </span>
+              <span className="profile-list__copy">
+                <strong>Face ID</strong>
+                <small>Approve access with biometrics</small>
               </span>
               <span className="toggle is-on" />
             </button>
@@ -1265,14 +1290,22 @@ function ProfileScreen({
           <span className="profile-section__label">Support</span>
           <div className="profile-list">
             <button type="button">
-              <span>
-                <Headphones size={19} /> Contact support
+              <span className="profile-list__icon">
+                <Headphones size={20} />
+              </span>
+              <span className="profile-list__copy">
+                <strong>Contact support</strong>
+                <small>Get help from the SpendX team</small>
               </span>
               <ChevronRight size={18} />
             </button>
             <button type="button">
-              <span>
-                <FileText size={19} /> Legal & privacy
+              <span className="profile-list__icon">
+                <FileText size={20} />
+              </span>
+              <span className="profile-list__copy">
+                <strong>Legal & privacy</strong>
+                <small>Policies, terms and data controls</small>
               </span>
               <ChevronRight size={18} />
             </button>
@@ -1288,7 +1321,7 @@ function ProfileScreen({
           Sign out of demo
         </button>
       </main>
-      <BottomNav active="profile" hasOrder onNavigate={onNavigate} />
+      <BottomNav active="profile" hasOrder={hasOrder} onNavigate={onNavigate} />
     </section>
   );
 }
@@ -1297,9 +1330,11 @@ export default function Home() {
   const [screen, setScreen] = useState<Screen>("welcome");
   const [activePlanIndex, setActivePlanIndex] = useState(3);
   const [hasOrder, setHasOrder] = useState(false);
+  const [orderedPlanIndex, setOrderedPlanIndex] = useState<number | null>(null);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const activePlan = plans[activePlanIndex] ?? plans[3];
+  const orderedPlan = plans[orderedPlanIndex ?? activePlanIndex] ?? plans[3];
 
   const navigate = (next: Screen) => {
     setScreen(next);
@@ -1309,6 +1344,7 @@ export default function Home() {
   const goBack = () => navigate(backMap[screen] ?? "welcome");
 
   const completePayment = () => {
+    setOrderedPlanIndex(activePlanIndex);
     setHasOrder(true);
     navigate("tracking");
   };
@@ -1385,6 +1421,7 @@ export default function Home() {
             {screen === "catalog" && (
               <CatalogScreen
                 activeIndex={activePlanIndex}
+                hasOrder={hasOrder}
                 onNavigate={navigate}
                 onOpenPlan={() => navigate("product")}
                 onSelect={setActivePlanIndex}
@@ -1409,12 +1446,19 @@ export default function Home() {
                 onBack={goBack}
                 onNavigate={navigate}
                 onPreviewCard={() => navigate("card")}
+                plan={orderedPlan}
               />
             )}
             {screen === "card" && (
-              <CardScreen onBack={goBack} onNavigate={navigate} />
+              <CardScreen
+                onBack={goBack}
+                onNavigate={navigate}
+                plan={orderedPlan}
+              />
             )}
-            {screen === "profile" && <ProfileScreen onNavigate={navigate} />}
+            {screen === "profile" && (
+              <ProfileScreen hasOrder={hasOrder} onNavigate={navigate} />
+            )}
           </div>
         </div>
       </div>
