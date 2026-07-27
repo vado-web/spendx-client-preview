@@ -1065,7 +1065,7 @@ function TrackingScreen({
           <ArrowRight size={18} />
         </button>
       </main>
-      <BottomNav active="cards" hasOrder onNavigate={onNavigate} />
+      {!sheet && <BottomNav active="cards" hasOrder onNavigate={onNavigate} />}
     </section>
   );
 }
@@ -1279,20 +1279,38 @@ function CardScreen({
                 <h3>Card settings</h3>
                 <div className="settings-list">
                   <button type="button">
-                    <span>
-                      <Fingerprint size={18} /> Biometric approval
+                    <span className="settings-list__leading">
+                      <span className="settings-list__icon">
+                        <Fingerprint size={19} />
+                      </span>
+                      <span className="settings-list__copy">
+                        <strong>Biometric approval</strong>
+                        <small>Confirm sensitive card actions</small>
+                      </span>
                     </span>
                     <span className="toggle is-on" />
                   </button>
                   <button type="button">
-                    <span>
-                      <Bell size={18} /> Payment alerts
+                    <span className="settings-list__leading">
+                      <span className="settings-list__icon">
+                        <Bell size={19} />
+                      </span>
+                      <span className="settings-list__copy">
+                        <strong>Payment alerts</strong>
+                        <small>Instant updates for every payment</small>
+                      </span>
                     </span>
                     <span className="toggle is-on" />
                   </button>
                   <button type="button">
-                    <span>
-                      <Layers size={18} /> Spending limits
+                    <span className="settings-list__leading">
+                      <span className="settings-list__icon">
+                        <Layers size={19} />
+                      </span>
+                      <span className="settings-list__copy">
+                        <strong>Spending limits</strong>
+                        <small>Review card usage controls</small>
+                      </span>
                     </span>
                     <ChevronRight size={18} />
                   </button>
