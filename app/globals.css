@@ -1059,7 +1059,7 @@ input:focus-visible {
   position: relative;
   z-index: 1;
   width: calc(100% + 48px);
-  height: 205px;
+  height: 218px;
   margin: 0 -24px;
   overflow: hidden;
   perspective: 1000px;
@@ -1074,9 +1074,9 @@ input:focus-visible {
 
 .gallery-card {
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 50%;
-  width: 76%;
+  width: min(86%, 335px);
   aspect-ratio: 1.586;
   padding: 0;
   border: 0;
@@ -1102,7 +1102,9 @@ input:focus-visible {
 }
 
 .card-gallery.is-dragging .gallery-card {
-  transition: none;
+  transition:
+    opacity 160ms ease,
+    filter 160ms ease;
 }
 
 .gallery-card--active {
@@ -1112,24 +1114,25 @@ input:focus-visible {
   transform: translate3d(calc(-50% + var(--drag-x)), 0, 25px) scale(1) rotateY(0);
 }
 
-.gallery-card--active.is-held {
-  filter: drop-shadow(0 33px 29px rgba(12, 25, 54, 0.33));
-  transform: translate3d(calc(-50% + var(--drag-x)), -11px, 68px) scale(1.045) rotateX(1.2deg);
-}
-
 .gallery-card--previous,
 .gallery-card--next {
   z-index: 2;
-  opacity: 0.66;
-  filter: saturate(0.82) brightness(0.96) drop-shadow(0 13px 14px rgba(12, 25, 54, 0.13));
+  opacity: 0;
+  pointer-events: none;
+  filter: saturate(0.9) brightness(0.97) drop-shadow(0 13px 14px rgba(12, 25, 54, 0.13));
 }
 
 .gallery-card--previous {
-  transform: translate3d(calc(-104% + var(--drag-x)), 7px, -48px) scale(0.87) rotateY(7deg);
+  transform: translate3d(calc(-158% + var(--drag-x)), 4px, -28px) scale(0.96) rotateY(3deg);
 }
 
 .gallery-card--next {
-  transform: translate3d(calc(4% + var(--drag-x)), 7px, -48px) scale(0.87) rotateY(-7deg);
+  transform: translate3d(calc(58% + var(--drag-x)), 4px, -28px) scale(0.96) rotateY(-3deg);
+}
+
+.card-gallery.is-dragging-previous .gallery-card--previous,
+.card-gallery.is-dragging-next .gallery-card--next {
+  opacity: 0.9;
 }
 
 .gallery-card--far-previous,
@@ -1160,7 +1163,7 @@ input:focus-visible {
   grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 12px;
-  margin-top: 0;
+  margin-top: -4px;
 }
 
 .card-stage__controls > button {
@@ -2404,17 +2407,17 @@ input:focus-visible {
 
   .card-gallery {
     width: calc(100% + 36px);
-    height: 195px;
+    height: 202px;
     margin: 0 -18px;
   }
 
   .gallery-card {
-    top: 4px;
-    width: 76%;
+    top: 3px;
+    width: 86%;
   }
 
   .card-stage__controls {
-    margin-top: 1px;
+    margin-top: -4px;
   }
 
   .plan-summary {
@@ -2528,15 +2531,15 @@ input:focus-visible {
   }
 
   .card-stage {
-    min-height: 204px;
+    min-height: 232px;
   }
 
   .card-gallery {
-    height: 184px;
+    height: 202px;
   }
 
   .card-stage__controls {
-    margin-top: -2px;
+    margin-top: -4px;
   }
 
   .plan-summary__heading {

@@ -40,7 +40,6 @@ import {
   type FormEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -536,32 +535,15 @@ function CatalogScreen({
 }) {
   const plan = plans[activeIndex] ?? plans[0];
   const pointerStart = useRef<number | null>(null);
-  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didDrag = useRef(false);
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [held, setHeld] = useState(false);
-
-  useEffect(
-    () => () => {
-      if (holdTimer.current) clearTimeout(holdTimer.current);
-    },
-    [],
-  );
 
   const wrapCardIndex = (index: number) =>
     (index + plans.length) % plans.length;
 
-  const clearHoldTimer = () => {
-    if (holdTimer.current) {
-      clearTimeout(holdTimer.current);
-      holdTimer.current = null;
-    }
-  };
-
   const selectCard = (index: number) => {
     if (index === activeIndex) return;
-    setHeld(false);
     onSelect(index);
   };
 
@@ -572,14 +554,6 @@ function CatalogScreen({
     setDragging(false);
     setDragX(0);
     event.currentTarget.setPointerCapture(event.pointerId);
-
-    const target = event.target as HTMLElement;
-    if (target.closest('[data-active="true"]')) {
-      clearHoldTimer();
-      holdTimer.current = setTimeout(() => {
-        if (!didDrag.current) setHeld(true);
-      }, 180);
-    }
   };
 
   const moveGalleryGesture = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -587,8 +561,6 @@ function CatalogScreen({
     const delta = event.clientX - pointerStart.current;
     if (Math.abs(delta) > 6) {
       didDrag.current = true;
-      clearHoldTimer();
-      setHeld(false);
       setDragging(true);
     }
     setDragX(Math.max(-105, Math.min(105, delta)));
@@ -600,7 +572,6 @@ function CatalogScreen({
   ) => {
     if (pointerStart.current === null) return;
     const delta = event.clientX - pointerStart.current;
-    clearHoldTimer();
 
     if (!cancelled && Math.abs(delta) > 48) {
       selectCard(
@@ -613,7 +584,6 @@ function CatalogScreen({
     pointerStart.current = null;
     setDragX(0);
     setDragging(false);
-    setHeld(false);
     if (didDrag.current) {
       setTimeout(() => {
         didDrag.current = false;
@@ -660,8 +630,14 @@ function CatalogScreen({
 
         <div className="card-stage">
           <div
-            aria-label="Card gallery. Swipe to browse. Hold the active card to lift it."
-            className={`card-gallery${dragging ? " is-dragging" : ""}`}
+            aria-label="Card gallery. Swipe to browse."
+            className={`card-gallery${dragging ? " is-dragging" : ""}${
+              dragging && dragX < 0
+                ? " is-dragging-next"
+                : dragging && dragX > 0
+                  ? " is-dragging-previous"
+                  : ""
+            }`}
             onContextMenu={(event) => event.preventDefault()}
             onPointerCancel={(event) => finishGalleryGesture(event, true)}
             onPointerDown={startGalleryGesture}
@@ -688,14 +664,10 @@ function CatalogScreen({
                   aria-current={offset === 0 ? "true" : undefined}
                   aria-label={
                     offset === 0
-                      ? `Hold ${item.name} card to preview`
+                      ? `Current ${item.name} card`
                       : `Select ${item.name} card`
                   }
-                  aria-pressed={offset === 0 ? held : undefined}
-                  className={`gallery-card gallery-card--${position}${
-                    held && offset === 0 ? " is-held" : ""
-                  }`}
-                  data-active={offset === 0}
+                  className={`gallery-card gallery-card--${position}`}
                   key={item.code}
                   onClick={() => {
                     if (!didDrag.current && offset !== 0) selectCard(index);
