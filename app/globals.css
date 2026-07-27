@@ -1059,7 +1059,8 @@ input:focus-visible {
   position: relative;
   z-index: 1;
   width: calc(100% + 48px);
-  height: 225px;
+  height: auto;
+  aspect-ratio: 1.586;
   margin: 0 -24px;
   overflow: hidden;
   perspective: 1000px;
@@ -1074,9 +1075,9 @@ input:focus-visible {
 
 .gallery-card {
   position: absolute;
-  top: 3px;
+  top: 0;
   left: 50%;
-  width: min(92%, 350px);
+  width: 100%;
   aspect-ratio: 1.586;
   padding: 0;
   border: 0;
@@ -1123,11 +1124,11 @@ input:focus-visible {
 }
 
 .gallery-card--previous {
-  transform: translate3d(calc(-158% + var(--drag-x)), 4px, -28px) scale(0.96) rotateY(3deg);
+  transform: translate3d(calc(-150% + var(--drag-x)), 2px, -18px) scale(0.985) rotateY(2deg);
 }
 
 .gallery-card--next {
-  transform: translate3d(calc(58% + var(--drag-x)), 4px, -28px) scale(0.96) rotateY(-3deg);
+  transform: translate3d(calc(50% + var(--drag-x)), 2px, -18px) scale(0.985) rotateY(-2deg);
 }
 
 .card-gallery.is-dragging-previous .gallery-card--previous,
@@ -1143,11 +1144,11 @@ input:focus-visible {
 }
 
 .gallery-card--far-previous {
-  transform: translate3d(calc(-158% + var(--drag-x)), 12px, -90px) scale(0.72);
+  transform: translate3d(calc(-250% + var(--drag-x)), 8px, -90px) scale(0.9);
 }
 
 .gallery-card--far-next {
-  transform: translate3d(calc(58% + var(--drag-x)), 12px, -90px) scale(0.72);
+  transform: translate3d(calc(150% + var(--drag-x)), 8px, -90px) scale(0.9);
 }
 
 .product-hero__image img,
@@ -2407,13 +2408,13 @@ input:focus-visible {
 
   .card-gallery {
     width: calc(100% + 36px);
-    height: 218px;
+    height: auto;
     margin: 0 -18px;
   }
 
   .gallery-card {
-    top: 3px;
-    width: 92%;
+    top: 0;
+    width: 100%;
   }
 
   .card-stage__controls {
@@ -2535,7 +2536,7 @@ input:focus-visible {
   }
 
   .card-gallery {
-    height: 218px;
+    height: auto;
   }
 
   .card-stage__controls {

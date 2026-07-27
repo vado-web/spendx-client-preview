@@ -557,7 +557,7 @@ function CatalogScreen({
     setDragging(false);
     setDragX(0);
     lastDragX.current = 0;
-    dragLimit.current = event.currentTarget.clientWidth * 0.9;
+    dragLimit.current = event.currentTarget.clientWidth * 1.02;
     swipeThreshold.current = Math.min(86, event.currentTarget.clientWidth * 0.17);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
