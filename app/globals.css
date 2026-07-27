@@ -346,6 +346,218 @@ input:focus-visible {
   width: 91px;
 }
 
+.spendx-card {
+  container-type: inline-size;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 6.5cqw;
+  background:
+    radial-gradient(circle at 78% 8%, rgba(91, 137, 186, 0.22), transparent 34%),
+    linear-gradient(145deg, #0b111b 0%, #121c29 55%, #05080d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+  transform: translateZ(0);
+}
+
+.spendx-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.44;
+  background:
+    linear-gradient(112deg, transparent 0 36%, rgba(255, 255, 255, 0.08) 36.2%, transparent 36.8%),
+    linear-gradient(292deg, transparent 0 64%, rgba(255, 255, 255, 0.06) 64.2%, transparent 64.8%),
+    repeating-linear-gradient(90deg, transparent 0 9.5%, rgba(255, 255, 255, 0.035) 10%, transparent 10.5% 19%);
+}
+
+.spendx-card--essential {
+  color: #252d79;
+  border-color: rgba(56, 73, 138, 0.12);
+  background:
+    radial-gradient(circle at 83% 10%, rgba(255, 255, 255, 0.95), transparent 36%),
+    linear-gradient(145deg, #f9fbff 0%, #e6edf8 52%, #cbd8ea 100%);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    inset 0 -1px 0 rgba(60, 79, 122, 0.12);
+}
+
+.spendx-card--plus {
+  background:
+    radial-gradient(circle at 18% 2%, rgba(54, 220, 255, 0.68), transparent 38%),
+    linear-gradient(145deg, #08bce8 0%, #009ccc 48%, #087798 100%);
+}
+
+.spendx-card--prime {
+  background:
+    radial-gradient(circle at 82% 78%, rgba(17, 106, 235, 0.68), transparent 43%),
+    linear-gradient(145deg, #061741 0%, #073278 53%, #0a55bf 100%);
+}
+
+.spendx-card--supreme {
+  background:
+    radial-gradient(circle at 77% 18%, rgba(86, 118, 151, 0.3), transparent 38%),
+    linear-gradient(145deg, #070b11 0%, #111b27 50%, #222f3f 100%);
+}
+
+.spendx-card--business {
+  background:
+    linear-gradient(126deg, transparent 0 60%, rgba(255, 255, 255, 0.055) 60.5%, transparent 61%),
+    radial-gradient(circle at 15% 5%, rgba(85, 91, 99, 0.2), transparent 35%),
+    linear-gradient(145deg, #050607 0%, #151719 55%, #24272b 100%);
+}
+
+.spendx-card__circuit {
+  position: absolute;
+  z-index: 0;
+  inset: 19% 8% 12%;
+  opacity: 0.32;
+  background:
+    linear-gradient(90deg, transparent 0 18%, currentColor 18.5% 19%, transparent 19.5% 100%),
+    linear-gradient(90deg, transparent 0 48%, currentColor 48.5% 49%, transparent 49.5% 100%),
+    linear-gradient(90deg, transparent 0 73%, currentColor 73.5% 74%, transparent 74.5% 100%),
+    linear-gradient(0deg, transparent 0 24%, currentColor 24.5% 25%, transparent 25.5% 100%),
+    linear-gradient(0deg, transparent 0 55%, currentColor 55.5% 56%, transparent 56.5% 100%),
+    linear-gradient(0deg, transparent 0 81%, currentColor 81.5% 82%, transparent 82.5% 100%);
+  mask-image: linear-gradient(90deg, transparent, #000 15%, #000 88%, transparent);
+}
+
+.spendx-card__circuit::before,
+.spendx-card__circuit::after {
+  content: "";
+  position: absolute;
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 0.35cqw;
+  background: currentColor;
+  box-shadow:
+    18cqw 8cqw currentColor,
+    38cqw 1cqw currentColor,
+    52cqw 19cqw currentColor,
+    67cqw 7cqw currentColor,
+    76cqw 28cqw currentColor;
+}
+
+.spendx-card__circuit::before {
+  top: 20%;
+  left: 13%;
+}
+
+.spendx-card__circuit::after {
+  right: 15%;
+  bottom: 18%;
+  transform: scale(0.72);
+}
+
+.spendx-card__brand {
+  position: absolute;
+  z-index: 2;
+  top: 10%;
+  left: 8%;
+  width: 37%;
+}
+
+.spendx-card__brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: none;
+}
+
+.spendx-card--essential .spendx-card__brand img {
+  filter: brightness(0) saturate(100%) invert(18%) sepia(75%) saturate(1751%) hue-rotate(226deg) brightness(81%) contrast(101%);
+}
+
+.spendx-card__chip {
+  position: absolute;
+  z-index: 2;
+  bottom: 28%;
+  left: 9%;
+  width: 18%;
+  aspect-ratio: 1.28;
+  overflow: hidden;
+  border: 0.55cqw solid currentColor;
+  border-radius: 2.3cqw;
+  opacity: 0.48;
+}
+
+.spendx-card__chip::before,
+.spendx-card__chip::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.spendx-card__chip::before {
+  width: 100%;
+  height: 0.45cqw;
+  top: 48%;
+  left: 0;
+}
+
+.spendx-card__chip::after {
+  width: 0.45cqw;
+  height: 100%;
+  top: 0;
+  left: 49%;
+}
+
+.spendx-card__chip i {
+  position: absolute;
+  width: 0.45cqw;
+  height: 100%;
+  top: 0;
+  background: currentColor;
+}
+
+.spendx-card__chip i:first-child {
+  left: 24%;
+}
+
+.spendx-card__chip i:nth-child(2) {
+  left: 73%;
+}
+
+.spendx-card__chip i:last-child {
+  width: 100%;
+  height: 0.45cqw;
+  top: 22%;
+  left: 0;
+}
+
+.spendx-card__plan {
+  position: absolute;
+  z-index: 2;
+  right: 8%;
+  bottom: 9%;
+  font-size: clamp(9px, 8.5cqw, 30px);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.spendx-card--essential .spendx-card__plan {
+  text-shadow: none;
+}
+
+.spendx-card__shine {
+  position: absolute;
+  z-index: 1;
+  width: 56%;
+  height: 170%;
+  top: -46%;
+  left: -35%;
+  transform: rotate(24deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.13), transparent);
+}
+
 .screen--light .brand-mark img {
   filter: brightness(0) saturate(100%);
 }
@@ -826,7 +1038,8 @@ input:focus-visible {
   justify-content: center;
   margin: 0;
   padding: 4px 24px 0;
-  overflow: hidden;
+  overflow: visible;
+  perspective: 900px;
   touch-action: pan-y;
 }
 
@@ -848,7 +1061,51 @@ input:focus-visible {
   aspect-ratio: 1.586;
   border-radius: 21px;
   filter: drop-shadow(0 24px 22px rgba(12, 25, 54, 0.21));
-  transition: 240ms ease;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform-origin: 50% 62%;
+  transform-style: preserve-3d;
+  transition:
+    transform 340ms cubic-bezier(0.2, 0.82, 0.2, 1),
+    filter 340ms ease;
+  will-change: transform;
+}
+
+.card-stage__image--next {
+  animation: card-arrive-next 430ms cubic-bezier(0.18, 0.82, 0.2, 1);
+}
+
+.card-stage__image--previous {
+  animation: card-arrive-previous 430ms cubic-bezier(0.18, 0.82, 0.2, 1);
+}
+
+.card-stage__image.is-focused {
+  z-index: 5;
+  transform: translate3d(0, -11px, 35px) scale(1.055) rotateX(1.5deg);
+  filter: drop-shadow(0 32px 28px rgba(12, 25, 54, 0.3));
+}
+
+@keyframes card-arrive-next {
+  from {
+    opacity: 0.28;
+    transform: translate3d(62px, 5px, -40px) scale(0.93) rotateY(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0);
+  }
+}
+
+@keyframes card-arrive-previous {
+  from {
+    opacity: 0.28;
+    transform: translate3d(-62px, 5px, -40px) scale(0.93) rotateY(8deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotateY(0);
+  }
 }
 
 .card-stage__image img,
@@ -1511,6 +1768,10 @@ input:focus-visible {
 }
 
 .managed-card.is-frozen img {
+  filter: none;
+}
+
+.managed-card.is-frozen .spendx-card {
   filter: grayscale(0.75) brightness(0.62) saturate(0.5);
 }
 
@@ -1924,12 +2185,22 @@ input:focus-visible {
 .logout-button {
   width: 100%;
   min-height: 49px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
   color: var(--danger);
   border: 1px solid rgba(212, 71, 86, 0.16);
   border-radius: 15px;
   background: #fff1f2;
   font-size: 12px;
   font-weight: 680;
+  box-shadow: 0 10px 24px rgba(212, 71, 86, 0.06);
+}
+
+.logout-button svg {
+  flex: 0 0 auto;
 }
 
 .preview-footer-note {

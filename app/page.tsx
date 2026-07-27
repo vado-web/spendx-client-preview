@@ -22,6 +22,7 @@ import {
   House,
   Layers,
   LockKeyhole,
+  LogOut,
   Mail,
   Plus,
   ScanFace,
@@ -124,6 +125,40 @@ const plans: Plan[] = [
     wallet: "Google Pay",
   },
 ];
+
+function SpendXCard({
+  plan,
+  className = "",
+}: {
+  plan: Plan;
+  className?: string;
+}) {
+  return (
+    <div
+      aria-label={`SpendX ${plan.name} card`}
+      className={`spendx-card spendx-card--${plan.code} ${className}`}
+      role="img"
+    >
+      <span aria-hidden="true" className="spendx-card__circuit" />
+      <span className="spendx-card__brand">
+        <Image
+          alt=""
+          height={158}
+          src="/brand/spendx-logo.png"
+          unoptimized
+          width={570}
+        />
+      </span>
+      <span aria-hidden="true" className="spendx-card__chip">
+        <i />
+        <i />
+        <i />
+      </span>
+      <strong className="spendx-card__plan">{plan.name}</strong>
+      <span aria-hidden="true" className="spendx-card__shine" />
+    </div>
+  );
+}
 
 const backMap: Partial<Record<Screen, Screen>> = {
   signup: "welcome",
@@ -277,17 +312,10 @@ function WelcomeScreen({
 
       <div aria-hidden="true" className="welcome-art">
         <div className="welcome-card welcome-card--back">
-          <Image alt="" fill priority sizes="250px" src="/brand/card-plus.png" unoptimized />
+          <SpendXCard plan={plans[1]} />
         </div>
         <div className="welcome-card welcome-card--front">
-          <Image
-            alt=""
-            fill
-            priority
-            sizes="310px"
-            src="/brand/card-supreme.png"
-            unoptimized
-          />
+          <SpendXCard plan={plans[3]} />
         </div>
         <span className="welcome-art__glow" />
       </div>
@@ -506,6 +534,15 @@ function CatalogScreen({
 }) {
   const plan = plans[activeIndex] ?? plans[0];
   const touchStart = useRef<number | null>(null);
+  const [motion, setMotion] = useState<"next" | "previous">("next");
+  const [focused, setFocused] = useState(false);
+
+  const selectCard = (index: number) => {
+    if (index === activeIndex) return;
+    setMotion(index > activeIndex ? "next" : "previous");
+    setFocused(false);
+    onSelect(index);
+  };
 
   const onTouchStart = (event: TouchEvent<HTMLDivElement>) => {
     touchStart.current = event.changedTouches[0]?.clientX ?? null;
@@ -516,7 +553,7 @@ function CatalogScreen({
     const end = event.changedTouches[0]?.clientX ?? touchStart.current;
     const delta = end - touchStart.current;
     if (Math.abs(delta) > 45) {
-      onSelect(
+      selectCard(
         delta < 0
           ? Math.min(plans.length - 1, activeIndex + 1)
           : Math.max(0, activeIndex - 1),
@@ -553,7 +590,7 @@ function CatalogScreen({
               aria-selected={index === activeIndex}
               className={index === activeIndex ? "plan-tab is-active" : "plan-tab"}
               key={item.code}
-              onClick={() => onSelect(index)}
+              onClick={() => selectCard(index)}
               role="tab"
               type="button"
             >
@@ -568,26 +605,22 @@ function CatalogScreen({
           onTouchStart={onTouchStart}
         >
           <button
-            aria-label={`View ${plan.name} card`}
-            className="card-stage__image"
+            aria-label={`${focused ? "Set down" : "Bring forward"} ${plan.name} card`}
+            aria-pressed={focused}
+            className={`card-stage__image card-stage__image--${motion}${
+              focused ? " is-focused" : ""
+            }`}
             key={plan.code}
-            onClick={onOpenPlan}
+            onClick={() => setFocused((value) => !value)}
             type="button"
           >
-            <Image
-              alt={`SpendX ${plan.name} card`}
-              fill
-              priority
-              sizes="(max-width: 500px) 86vw, 360px"
-              src={plan.image}
-              unoptimized
-            />
+            <SpendXCard plan={plan} />
           </button>
           <div className="card-stage__controls">
             <button
               aria-label="Previous card"
               disabled={activeIndex === 0}
-              onClick={() => onSelect(Math.max(0, activeIndex - 1))}
+              onClick={() => selectCard(Math.max(0, activeIndex - 1))}
               type="button"
             >
               <ArrowLeft size={18} />
@@ -603,7 +636,7 @@ function CatalogScreen({
                     index === activeIndex ? "card-dot is-active" : "card-dot"
                   }
                   key={item.code}
-                  onClick={() => onSelect(index)}
+                  onClick={() => selectCard(index)}
                   type="button"
                 />
               ))}
@@ -612,7 +645,7 @@ function CatalogScreen({
               aria-label="Next card"
               disabled={activeIndex === plans.length - 1}
               onClick={() =>
-                onSelect(Math.min(plans.length - 1, activeIndex + 1))
+                selectCard(Math.min(plans.length - 1, activeIndex + 1))
               }
               type="button"
             >
@@ -687,14 +720,7 @@ function ProductScreen({
         <div className="product-hero">
           <span className="product-hero__glow" />
           <div className="product-hero__image">
-            <Image
-              alt={`SpendX ${plan.name} card`}
-              fill
-              priority
-              sizes="360px"
-              src={plan.image}
-              unoptimized
-            />
+            <SpendXCard plan={plan} />
           </div>
           <span className="product-hero__badge">
             <BadgeCheck size={16} />
@@ -889,13 +915,7 @@ function TrackingScreen({
       <main className="screen-content tracking-content">
         <div className="order-card">
           <div className="order-card__image">
-            <Image
-              alt={`SpendX ${plan.name} card`}
-              fill
-              sizes="110px"
-              src={plan.image}
-              unoptimized
-            />
+            <SpendXCard plan={plan} />
           </div>
           <div className="order-card__details">
             <span>Order SX-24038</span>
@@ -1028,14 +1048,7 @@ function CardScreen({
         </div>
 
         <div className={frozen ? "managed-card is-frozen" : "managed-card"}>
-          <Image
-            alt={`SpendX ${plan.name} virtual card`}
-            fill
-            priority
-            sizes="380px"
-            src={plan.image}
-            unoptimized
-          />
+          <SpendXCard plan={plan} />
           {frozen && (
             <span className="managed-card__frozen">
               <Snowflake size={18} />
@@ -1317,8 +1330,8 @@ function ProfileScreen({
           onClick={() => onNavigate("welcome")}
           type="button"
         >
-          <ArrowLeft size={18} />
-          Sign out of demo
+          <LogOut size={18} />
+          <span>Sign out of demo</span>
         </button>
       </main>
       <BottomNav active="profile" hasOrder={hasOrder} onNavigate={onNavigate} />
