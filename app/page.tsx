@@ -141,23 +141,14 @@ function SpendXCard({
       className={`spendx-card spendx-card--${plan.code} ${className}`}
       role="img"
     >
-      <span aria-hidden="true" className="spendx-card__circuit" />
-      <span className="spendx-card__brand">
-        <Image
-          alt=""
-          height={158}
-          src="/brand/spendx-logo.png"
-          unoptimized
-          width={570}
-        />
-      </span>
-      <span aria-hidden="true" className="spendx-card__chip">
-        <i />
-        <i />
-        <i />
-      </span>
-      <strong className="spendx-card__plan">{plan.name}</strong>
-      <span aria-hidden="true" className="spendx-card__shine" />
+      <Image
+        alt=""
+        className="spendx-card__image"
+        fill
+        sizes="(max-width: 520px) 92vw, 520px"
+        src={plan.image}
+        unoptimized
+      />
     </div>
   );
 }
