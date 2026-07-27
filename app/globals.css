@@ -1032,7 +1032,7 @@ input:focus-visible {
 
 .card-stage {
   position: relative;
-  min-height: 258px;
+  min-height: 255px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1040,7 +1040,6 @@ input:focus-visible {
   padding: 4px 24px 0;
   overflow: visible;
   perspective: 900px;
-  touch-action: pan-y;
 }
 
 .card-stage::before {
@@ -1048,67 +1047,106 @@ input:focus-visible {
   position: absolute;
   width: 260px;
   height: 175px;
-  left: 78px;
-  top: 35px;
+  left: 50%;
+  top: 29px;
   border-radius: 50%;
+  transform: translateX(-50%);
   background: rgba(48, 52, 168, 0.22);
   filter: blur(34px);
 }
 
-.card-stage__image {
+.card-gallery {
   position: relative;
-  width: 100%;
+  z-index: 1;
+  width: calc(100% + 48px);
+  height: 205px;
+  margin: 0 -24px;
+  overflow: hidden;
+  perspective: 1000px;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+
+.card-gallery.is-dragging {
+  cursor: grabbing;
+}
+
+.gallery-card {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 76%;
   aspect-ratio: 1.586;
-  border-radius: 21px;
-  filter: drop-shadow(0 24px 22px rgba(12, 25, 54, 0.21));
   padding: 0;
   border: 0;
   background: transparent;
-  transform-origin: 50% 62%;
+  filter: drop-shadow(0 16px 17px rgba(12, 25, 54, 0.16));
+  transform-origin: 50% 65%;
   transform-style: preserve-3d;
   transition:
-    transform 340ms cubic-bezier(0.2, 0.82, 0.2, 1),
-    filter 340ms ease;
-  will-change: transform;
+    transform 480ms cubic-bezier(0.2, 0.82, 0.2, 1),
+    opacity 360ms ease,
+    filter 420ms ease;
+  will-change: transform, opacity;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.card-stage__image--next {
-  animation: card-arrive-next 430ms cubic-bezier(0.18, 0.82, 0.2, 1);
+.gallery-card * {
+  pointer-events: none;
 }
 
-.card-stage__image--previous {
-  animation: card-arrive-previous 430ms cubic-bezier(0.18, 0.82, 0.2, 1);
+.gallery-card:focus-visible {
+  outline: 3px solid rgba(48, 52, 168, 0.28);
+  outline-offset: 4px;
 }
 
-.card-stage__image.is-focused {
-  z-index: 5;
-  transform: translate3d(0, -11px, 35px) scale(1.055) rotateX(1.5deg);
-  filter: drop-shadow(0 32px 28px rgba(12, 25, 54, 0.3));
+.card-gallery.is-dragging .gallery-card {
+  transition: none;
 }
 
-@keyframes card-arrive-next {
-  from {
-    opacity: 0.28;
-    transform: translate3d(62px, 5px, -40px) scale(0.93) rotateY(-8deg);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotateY(0);
-  }
+.gallery-card--active {
+  z-index: 4;
+  opacity: 1;
+  filter: drop-shadow(0 24px 22px rgba(12, 25, 54, 0.23));
+  transform: translate3d(calc(-50% + var(--drag-x)), 0, 25px) scale(1) rotateY(0);
 }
 
-@keyframes card-arrive-previous {
-  from {
-    opacity: 0.28;
-    transform: translate3d(-62px, 5px, -40px) scale(0.93) rotateY(8deg);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotateY(0);
-  }
+.gallery-card--active.is-held {
+  filter: drop-shadow(0 33px 29px rgba(12, 25, 54, 0.33));
+  transform: translate3d(calc(-50% + var(--drag-x)), -11px, 68px) scale(1.045) rotateX(1.2deg);
 }
 
-.card-stage__image img,
+.gallery-card--previous,
+.gallery-card--next {
+  z-index: 2;
+  opacity: 0.66;
+  filter: saturate(0.82) brightness(0.96) drop-shadow(0 13px 14px rgba(12, 25, 54, 0.13));
+}
+
+.gallery-card--previous {
+  transform: translate3d(calc(-104% + var(--drag-x)), 7px, -48px) scale(0.87) rotateY(7deg);
+}
+
+.gallery-card--next {
+  transform: translate3d(calc(4% + var(--drag-x)), 7px, -48px) scale(0.87) rotateY(-7deg);
+}
+
+.gallery-card--far-previous,
+.gallery-card--far-next {
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gallery-card--far-previous {
+  transform: translate3d(calc(-158% + var(--drag-x)), 12px, -90px) scale(0.72);
+}
+
+.gallery-card--far-next {
+  transform: translate3d(calc(58% + var(--drag-x)), 12px, -90px) scale(0.72);
+}
+
 .product-hero__image img,
 .order-card__image img,
 .managed-card img {
@@ -1122,7 +1160,7 @@ input:focus-visible {
   grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 12px;
-  margin-top: 7px;
+  margin-top: 0;
 }
 
 .card-stage__controls > button {
@@ -2364,9 +2402,15 @@ input:focus-visible {
     transform: translateX(-50%);
   }
 
-  .card-stage__image {
-    width: min(100%, 350px);
-    margin: 0 auto;
+  .card-gallery {
+    width: calc(100% + 36px);
+    height: 195px;
+    margin: 0 -18px;
+  }
+
+  .gallery-card {
+    top: 4px;
+    width: 76%;
   }
 
   .card-stage__controls {
@@ -2485,6 +2529,10 @@ input:focus-visible {
 
   .card-stage {
     min-height: 204px;
+  }
+
+  .card-gallery {
+    height: 184px;
   }
 
   .card-stage__controls {

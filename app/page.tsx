@@ -36,9 +36,11 @@ import {
   X,
 } from "lucide-react";
 import {
+  type CSSProperties,
   type FormEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
-  type TouchEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -533,33 +535,90 @@ function CatalogScreen({
   onNavigate: (screen: Screen) => void;
 }) {
   const plan = plans[activeIndex] ?? plans[0];
-  const touchStart = useRef<number | null>(null);
-  const [motion, setMotion] = useState<"next" | "previous">("next");
-  const [focused, setFocused] = useState(false);
+  const pointerStart = useRef<number | null>(null);
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didDrag = useRef(false);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [held, setHeld] = useState(false);
+
+  useEffect(
+    () => () => {
+      if (holdTimer.current) clearTimeout(holdTimer.current);
+    },
+    [],
+  );
+
+  const wrapCardIndex = (index: number) =>
+    (index + plans.length) % plans.length;
+
+  const clearHoldTimer = () => {
+    if (holdTimer.current) {
+      clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+    }
+  };
 
   const selectCard = (index: number) => {
     if (index === activeIndex) return;
-    setMotion(index > activeIndex ? "next" : "previous");
-    setFocused(false);
+    setHeld(false);
     onSelect(index);
   };
 
-  const onTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    touchStart.current = event.changedTouches[0]?.clientX ?? null;
+  const startGalleryGesture = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    pointerStart.current = event.clientX;
+    didDrag.current = false;
+    setDragging(false);
+    setDragX(0);
+    event.currentTarget.setPointerCapture(event.pointerId);
+
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-active="true"]')) {
+      clearHoldTimer();
+      holdTimer.current = setTimeout(() => {
+        if (!didDrag.current) setHeld(true);
+      }, 180);
+    }
   };
 
-  const onTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
-    if (touchStart.current === null) return;
-    const end = event.changedTouches[0]?.clientX ?? touchStart.current;
-    const delta = end - touchStart.current;
-    if (Math.abs(delta) > 45) {
+  const moveGalleryGesture = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (pointerStart.current === null) return;
+    const delta = event.clientX - pointerStart.current;
+    if (Math.abs(delta) > 6) {
+      didDrag.current = true;
+      clearHoldTimer();
+      setHeld(false);
+      setDragging(true);
+    }
+    setDragX(Math.max(-105, Math.min(105, delta)));
+  };
+
+  const finishGalleryGesture = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    cancelled = false,
+  ) => {
+    if (pointerStart.current === null) return;
+    const delta = event.clientX - pointerStart.current;
+    clearHoldTimer();
+
+    if (!cancelled && Math.abs(delta) > 48) {
       selectCard(
         delta < 0
-          ? Math.min(plans.length - 1, activeIndex + 1)
-          : Math.max(0, activeIndex - 1),
+          ? wrapCardIndex(activeIndex + 1)
+          : wrapCardIndex(activeIndex - 1),
       );
     }
-    touchStart.current = null;
+
+    pointerStart.current = null;
+    setDragX(0);
+    setDragging(false);
+    setHeld(false);
+    if (didDrag.current) {
+      setTimeout(() => {
+        didDrag.current = false;
+      }, 0);
+    }
   };
 
   return (
@@ -599,28 +658,59 @@ function CatalogScreen({
           ))}
         </div>
 
-        <div
-          className="card-stage"
-          onTouchEnd={onTouchEnd}
-          onTouchStart={onTouchStart}
-        >
-          <button
-            aria-label={`${focused ? "Set down" : "Bring forward"} ${plan.name} card`}
-            aria-pressed={focused}
-            className={`card-stage__image card-stage__image--${motion}${
-              focused ? " is-focused" : ""
-            }`}
-            key={plan.code}
-            onClick={() => setFocused((value) => !value)}
-            type="button"
+        <div className="card-stage">
+          <div
+            aria-label="Card gallery. Swipe to browse. Hold the active card to lift it."
+            className={`card-gallery${dragging ? " is-dragging" : ""}`}
+            onContextMenu={(event) => event.preventDefault()}
+            onPointerCancel={(event) => finishGalleryGesture(event, true)}
+            onPointerDown={startGalleryGesture}
+            onPointerMove={moveGalleryGesture}
+            onPointerUp={finishGalleryGesture}
+            style={{ "--drag-x": `${dragX}px` } as CSSProperties}
           >
-            <SpendXCard plan={plan} />
-          </button>
+            {plans.map((item, index) => {
+              let offset = index - activeIndex;
+              if (offset > plans.length / 2) offset -= plans.length;
+              if (offset < -plans.length / 2) offset += plans.length;
+              const position =
+                offset === 0
+                  ? "active"
+                  : offset === -1
+                    ? "previous"
+                    : offset === 1
+                      ? "next"
+                      : offset < 0
+                        ? "far-previous"
+                        : "far-next";
+              return (
+                <button
+                  aria-current={offset === 0 ? "true" : undefined}
+                  aria-label={
+                    offset === 0
+                      ? `Hold ${item.name} card to preview`
+                      : `Select ${item.name} card`
+                  }
+                  aria-pressed={offset === 0 ? held : undefined}
+                  className={`gallery-card gallery-card--${position}${
+                    held && offset === 0 ? " is-held" : ""
+                  }`}
+                  data-active={offset === 0}
+                  key={item.code}
+                  onClick={() => {
+                    if (!didDrag.current && offset !== 0) selectCard(index);
+                  }}
+                  type="button"
+                >
+                  <SpendXCard plan={item} />
+                </button>
+              );
+            })}
+          </div>
           <div className="card-stage__controls">
             <button
               aria-label="Previous card"
-              disabled={activeIndex === 0}
-              onClick={() => selectCard(Math.max(0, activeIndex - 1))}
+              onClick={() => selectCard(wrapCardIndex(activeIndex - 1))}
               type="button"
             >
               <ArrowLeft size={18} />
@@ -643,10 +733,7 @@ function CatalogScreen({
             </div>
             <button
               aria-label="Next card"
-              disabled={activeIndex === plans.length - 1}
-              onClick={() =>
-                selectCard(Math.min(plans.length - 1, activeIndex + 1))
-              }
+              onClick={() => selectCard(wrapCardIndex(activeIndex + 1))}
               type="button"
             >
               <ArrowRight size={18} />
