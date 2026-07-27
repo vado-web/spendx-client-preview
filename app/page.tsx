@@ -535,6 +535,9 @@ function CatalogScreen({
 }) {
   const plan = plans[activeIndex] ?? plans[0];
   const pointerStart = useRef<number | null>(null);
+  const dragLimit = useRef(320);
+  const swipeThreshold = useRef(60);
+  const lastDragX = useRef(0);
   const didDrag = useRef(false);
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -553,6 +556,9 @@ function CatalogScreen({
     didDrag.current = false;
     setDragging(false);
     setDragX(0);
+    lastDragX.current = 0;
+    dragLimit.current = event.currentTarget.clientWidth * 0.9;
+    swipeThreshold.current = Math.min(86, event.currentTarget.clientWidth * 0.17);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -563,17 +569,18 @@ function CatalogScreen({
       didDrag.current = true;
       setDragging(true);
     }
-    setDragX(Math.max(-105, Math.min(105, delta)));
+    const nextDragX = Math.max(
+      -dragLimit.current,
+      Math.min(dragLimit.current, delta),
+    );
+    lastDragX.current = nextDragX;
+    setDragX(nextDragX);
   };
 
-  const finishGalleryGesture = (
-    event: ReactPointerEvent<HTMLDivElement>,
-    cancelled = false,
-  ) => {
+  const finishGalleryGesture = (delta: number, cancelled = false) => {
     if (pointerStart.current === null) return;
-    const delta = event.clientX - pointerStart.current;
 
-    if (!cancelled && Math.abs(delta) > 48) {
+    if (!cancelled && Math.abs(delta) > swipeThreshold.current) {
       selectCard(
         delta < 0
           ? wrapCardIndex(activeIndex + 1)
@@ -582,6 +589,7 @@ function CatalogScreen({
     }
 
     pointerStart.current = null;
+    lastDragX.current = 0;
     setDragX(0);
     setDragging(false);
     if (didDrag.current) {
@@ -639,10 +647,21 @@ function CatalogScreen({
                   : ""
             }`}
             onContextMenu={(event) => event.preventDefault()}
-            onPointerCancel={(event) => finishGalleryGesture(event, true)}
+            onLostPointerCapture={() =>
+              finishGalleryGesture(lastDragX.current)
+            }
+            onPointerCancel={() =>
+              finishGalleryGesture(lastDragX.current, true)
+            }
             onPointerDown={startGalleryGesture}
             onPointerMove={moveGalleryGesture}
-            onPointerUp={finishGalleryGesture}
+            onPointerUp={(event) =>
+              finishGalleryGesture(
+                pointerStart.current === null
+                  ? lastDragX.current
+                  : event.clientX - pointerStart.current,
+              )
+            }
             style={{ "--drag-x": `${dragX}px` } as CSSProperties}
           >
             {plans.map((item, index) => {

@@ -1059,7 +1059,7 @@ input:focus-visible {
   position: relative;
   z-index: 1;
   width: calc(100% + 48px);
-  height: 218px;
+  height: 225px;
   margin: 0 -24px;
   overflow: hidden;
   perspective: 1000px;
@@ -1076,7 +1076,7 @@ input:focus-visible {
   position: absolute;
   top: 3px;
   left: 50%;
-  width: min(86%, 335px);
+  width: min(92%, 350px);
   aspect-ratio: 1.586;
   padding: 0;
   border: 0;
@@ -1163,7 +1163,7 @@ input:focus-visible {
   grid-template-columns: 36px 1fr 36px;
   align-items: center;
   gap: 12px;
-  margin-top: -4px;
+  margin-top: -6px;
 }
 
 .card-stage__controls > button {
@@ -2407,17 +2407,17 @@ input:focus-visible {
 
   .card-gallery {
     width: calc(100% + 36px);
-    height: 202px;
+    height: 218px;
     margin: 0 -18px;
   }
 
   .gallery-card {
     top: 3px;
-    width: 86%;
+    width: 92%;
   }
 
   .card-stage__controls {
-    margin-top: -4px;
+    margin-top: -6px;
   }
 
   .plan-summary {
@@ -2531,15 +2531,15 @@ input:focus-visible {
   }
 
   .card-stage {
-    min-height: 232px;
+    min-height: 246px;
   }
 
   .card-gallery {
-    height: 202px;
+    height: 218px;
   }
 
   .card-stage__controls {
-    margin-top: -4px;
+    margin-top: -6px;
   }
 
   .plan-summary__heading {
