@@ -674,7 +674,7 @@ input:focus-visible {
   width: 218px;
   height: 138px;
   right: -14px;
-  top: 6px;
+  top: 20px;
   transform: rotate(10deg);
   opacity: 0.86;
 }
@@ -3118,7 +3118,7 @@ input:focus-visible {
   .screen--welcome .welcome-card--back {
     width: 210px;
     height: 132px;
-    top: 3px;
+    top: 14px;
     right: -10px;
   }
 
