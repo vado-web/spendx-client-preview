@@ -460,11 +460,10 @@ function SupportAssist({
               }
             : undefined
         }
-        title="Tap for support · hold to move"
+        title="Support"
         type="button"
       >
         <Headphones aria-hidden="true" size={22} strokeWidth={1.9} />
-        <span>Hold to move</span>
       </button>
 
       {isOpen && (
