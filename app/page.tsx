@@ -290,19 +290,181 @@ function SupportAssist({
   onClose: () => void;
   onOpen: () => void;
 }) {
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(
+    null,
+  );
+  const [isDragging, setIsDragging] = useState(false);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const suppressClickRef = useRef(false);
+  const latestPositionRef = useRef<{ x: number; y: number } | null>(null);
+  const gestureRef = useRef<{
+    button: HTMLButtonElement;
+    container: HTMLElement;
+    dragging: boolean;
+    originX: number;
+    originY: number;
+    pointerId: number;
+    startClientX: number;
+    startClientY: number;
+  } | null>(null);
+
+  const clearLongPress = () => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  };
+
+  useEffect(() => clearLongPress, []);
+
+  const startDragIntent = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) => {
+    if (event.button !== 0) return;
+
+    const button = event.currentTarget;
+    const container = button.parentElement;
+    if (!container) return;
+
+    const buttonRect = button.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const originX = buttonRect.left - containerRect.left;
+    const originY = buttonRect.top - containerRect.top;
+
+    suppressClickRef.current = false;
+    latestPositionRef.current = { x: originX, y: originY };
+    gestureRef.current = {
+      button,
+      container,
+      dragging: false,
+      originX,
+      originY,
+      pointerId: event.pointerId,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+    };
+    button.setPointerCapture(event.pointerId);
+
+    longPressTimerRef.current = setTimeout(() => {
+      const gesture = gestureRef.current;
+      if (!gesture || gesture.pointerId !== event.pointerId) return;
+      gesture.dragging = true;
+      suppressClickRef.current = true;
+      setIsDragging(true);
+      setPosition({ x: gesture.originX, y: gesture.originY });
+    }, 320);
+  };
+
+  const moveSupport = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) => {
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - gesture.startClientX;
+    const deltaY = event.clientY - gesture.startClientY;
+
+    if (!gesture.dragging) {
+      if (Math.hypot(deltaX, deltaY) > 9) {
+        clearLongPress();
+        suppressClickRef.current = true;
+      }
+      return;
+    }
+
+    event.preventDefault();
+    const containerRect = gesture.container.getBoundingClientRect();
+    const buttonSize = gesture.button.offsetWidth;
+    const x = Math.min(
+      Math.max(10, gesture.originX + deltaX),
+      containerRect.width - buttonSize - 10,
+    );
+    const y = Math.min(
+      Math.max(50, gesture.originY + deltaY),
+      containerRect.height - buttonSize - 88,
+    );
+    const nextPosition = { x, y };
+    latestPositionRef.current = nextPosition;
+    setPosition(nextPosition);
+  };
+
+  const finishDragIntent = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) => {
+    clearLongPress();
+    const gesture = gestureRef.current;
+    if (!gesture || gesture.pointerId !== event.pointerId) return;
+
+    if (gesture.button.hasPointerCapture(event.pointerId)) {
+      gesture.button.releasePointerCapture(event.pointerId);
+    }
+
+    if (gesture.dragging) {
+      const currentPosition = latestPositionRef.current ?? {
+        x: gesture.originX,
+        y: gesture.originY,
+      };
+      const containerWidth = gesture.container.getBoundingClientRect().width;
+      const buttonSize = gesture.button.offsetWidth;
+      const snapX =
+        currentPosition.x + buttonSize / 2 < containerWidth / 2
+          ? 10
+          : containerWidth - buttonSize - 10;
+      const snappedPosition = { x: snapX, y: currentPosition.y };
+      latestPositionRef.current = snappedPosition;
+      setPosition(snappedPosition);
+    }
+
+    gestureRef.current = null;
+    setIsDragging(false);
+  };
+
+  const cancelDragIntent = (
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) => {
+    clearLongPress();
+    if (gestureRef.current?.pointerId === event.pointerId) {
+      gestureRef.current = null;
+    }
+    setIsDragging(false);
+  };
+
+  const openSupport = () => {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+    onOpen();
+  };
+
   return (
     <>
       <button
         aria-expanded={isOpen}
         aria-label="Contact SpendX support"
-        className="support-fab"
+        className={isDragging ? "support-fab is-dragging" : "support-fab"}
+        data-draggable="long-press"
         data-testid="support-button"
-        onClick={onOpen}
-        title="Support"
+        onClick={openSupport}
+        onPointerCancel={cancelDragIntent}
+        onPointerDown={startDragIntent}
+        onPointerMove={moveSupport}
+        onPointerUp={finishDragIntent}
+        style={
+          position
+            ? {
+                bottom: "auto",
+                left: `${position.x}px`,
+                right: "auto",
+                top: `${position.y}px`,
+              }
+            : undefined
+        }
+        title="Tap for support · hold to move"
         type="button"
       >
         <Headphones aria-hidden="true" size={22} strokeWidth={1.9} />
-        <span>Support</span>
+        <span>Hold to move</span>
       </button>
 
       {isOpen && (

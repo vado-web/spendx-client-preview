@@ -51,3 +51,16 @@ test("uses the supplied card artwork for every card product", async () => {
   assert.match(page, /className="spendx-card__image"/);
   assert.match(page, /src=\{plan\.image\}/);
 });
+
+test("support control opens on tap and moves after a long press", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /data-draggable="long-press"/);
+  assert.match(page, /onPointerDown=\{startDragIntent\}/);
+  assert.match(page, /onPointerMove=\{moveSupport\}/);
+  assert.match(page, /setPointerCapture\(event\.pointerId\)/);
+  assert.match(page, /}, 320\);/);
+  assert.match(css, /\.support-fab\s*\{[^}]*touch-action:\s*none;/s);
+  assert.match(css, /\.support-fab\.is-dragging/);
+});
