@@ -282,10 +282,12 @@ function BottomNav({
 }
 
 function SupportAssist({
+  hasBottomNavigation,
   isOpen,
   onClose,
   onOpen,
 }: {
+  hasBottomNavigation: boolean;
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
@@ -294,6 +296,7 @@ function SupportAssist({
     null,
   );
   const [isDragging, setIsDragging] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressClickRef = useRef(false);
   const latestPositionRef = useRef<{ x: number; y: number } | null>(null);
@@ -316,6 +319,24 @@ function SupportAssist({
   };
 
   useEffect(() => clearLongPress, []);
+
+  useEffect(() => {
+    const button = buttonRef.current;
+    const currentPosition = latestPositionRef.current;
+    const container = button?.parentElement;
+    if (!button || !container || !currentPosition) return;
+
+    const bottomInset = hasBottomNavigation ? 88 : 10;
+    const maxY =
+      container.getBoundingClientRect().height -
+      button.offsetHeight -
+      bottomInset;
+    if (currentPosition.y <= maxY) return;
+
+    const nextPosition = { x: currentPosition.x, y: maxY };
+    latestPositionRef.current = nextPosition;
+    setPosition(nextPosition);
+  }, [hasBottomNavigation]);
 
   const startDragIntent = (
     event: ReactPointerEvent<HTMLButtonElement>,
@@ -379,9 +400,10 @@ function SupportAssist({
       Math.max(10, gesture.originX + deltaX),
       containerRect.width - buttonSize - 10,
     );
+    const bottomInset = hasBottomNavigation ? 88 : 10;
     const y = Math.min(
       Math.max(50, gesture.originY + deltaY),
-      containerRect.height - buttonSize - 88,
+      containerRect.height - buttonSize - bottomInset,
     );
     const nextPosition = { x, y };
     latestPositionRef.current = nextPosition;
@@ -442,7 +464,13 @@ function SupportAssist({
       <button
         aria-expanded={isOpen}
         aria-label="Contact SpendX support"
-        className={isDragging ? "support-fab is-dragging" : "support-fab"}
+        className={[
+          "support-fab",
+          hasBottomNavigation ? "support-fab--above-nav" : "",
+          isDragging ? "is-dragging" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         data-draggable="long-press"
         data-testid="support-button"
         onClick={openSupport}
@@ -450,6 +478,7 @@ function SupportAssist({
         onPointerDown={startDragIntent}
         onPointerMove={moveSupport}
         onPointerUp={finishDragIntent}
+        ref={buttonRef}
         style={
           position
             ? {
@@ -1806,6 +1835,12 @@ export default function Home() {
           </div>
 
           <SupportAssist
+            hasBottomNavigation={[
+              "catalog",
+              "tracking",
+              "card",
+              "profile",
+            ].includes(screen)}
             isOpen={supportOpen}
             onClose={() => setSupportOpen(false)}
             onOpen={() => setSupportOpen(true)}

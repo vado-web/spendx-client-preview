@@ -57,6 +57,8 @@ test("support control opens on tap and moves after a long press", async () => {
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 
   assert.match(page, /data-draggable="long-press"/);
+  assert.match(page, /support-fab--above-nav/);
+  assert.match(page, /hasBottomNavigation=\{\[/);
   assert.match(page, /onPointerDown=\{startDragIntent\}/);
   assert.match(page, /onPointerMove=\{moveSupport\}/);
   assert.match(page, /setPointerCapture\(event\.pointerId\)/);

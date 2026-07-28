@@ -1368,7 +1368,7 @@ input:focus-visible {
   position: absolute;
   z-index: 28;
   right: 14px;
-  bottom: 100px;
+  bottom: 18px;
   width: 52px;
   height: 52px;
   display: grid;
@@ -1397,6 +1397,10 @@ input:focus-visible {
     transform 160ms ease,
     background 160ms ease,
     box-shadow 160ms ease;
+}
+
+.support-fab--above-nav {
+  bottom: 100px;
 }
 
 .support-fab:hover,
