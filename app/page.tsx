@@ -281,6 +281,82 @@ function BottomNav({
   );
 }
 
+function SupportAssist({
+  isOpen,
+  onClose,
+  onOpen,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onOpen: () => void;
+}) {
+  return (
+    <>
+      <button
+        aria-expanded={isOpen}
+        aria-label="Contact SpendX support"
+        className="support-fab"
+        data-testid="support-button"
+        onClick={onOpen}
+        title="Support"
+        type="button"
+      >
+        <Headphones aria-hidden="true" size={22} strokeWidth={1.9} />
+        <span>Support</span>
+      </button>
+
+      {isOpen && (
+        <div
+          className="support-overlay"
+          onClick={onClose}
+          role="presentation"
+        >
+          <section
+            aria-labelledby="support-title"
+            aria-modal="true"
+            className="support-panel"
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+          >
+            <div className="support-panel__grabber" />
+            <div className="support-panel__top">
+              <div className="support-panel__icon">
+                <Headphones aria-hidden="true" size={23} strokeWidth={1.9} />
+              </div>
+              <button
+                aria-label="Close support"
+                className="support-panel__close"
+                onClick={onClose}
+                type="button"
+              >
+                <X aria-hidden="true" size={21} />
+              </button>
+            </div>
+            <span className="eyebrow">SpendX support</span>
+            <h2 id="support-title">How can we help?</h2>
+            <p>
+              Get help with verification, card orders, payments or your
+              account.
+            </p>
+            <button
+              className="support-panel__action"
+              onClick={onClose}
+              type="button"
+            >
+              <Send aria-hidden="true" size={19} />
+              <span>
+                <strong>Start a conversation</strong>
+                <small>A specialist will respond in the support chat</small>
+              </span>
+              <ChevronRight aria-hidden="true" size={20} />
+            </button>
+          </section>
+        </div>
+      )}
+    </>
+  );
+}
+
 function WelcomeScreen({
   onCreate,
   onExplore,
@@ -1432,6 +1508,7 @@ export default function Home() {
   const [activePlanIndex, setActivePlanIndex] = useState(3);
   const [hasOrder, setHasOrder] = useState(false);
   const [orderedPlanIndex, setOrderedPlanIndex] = useState<number | null>(null);
+  const [supportOpen, setSupportOpen] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const activePlan = plans[activePlanIndex] ?? plans[3];
@@ -1443,6 +1520,7 @@ export default function Home() {
   }, [screen]);
 
   const navigate = (next: Screen) => {
+    setSupportOpen(false);
     setScreen(next);
   };
 
@@ -1565,6 +1643,12 @@ export default function Home() {
               <ProfileScreen hasOrder={hasOrder} onNavigate={navigate} />
             )}
           </div>
+
+          <SupportAssist
+            isOpen={supportOpen}
+            onClose={() => setSupportOpen(false)}
+            onOpen={() => setSupportOpen(true)}
+          />
         </div>
       </div>
 

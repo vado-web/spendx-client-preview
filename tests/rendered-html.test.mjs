@@ -34,6 +34,8 @@ test("server-renders the SpendX mobile demo", async () => {
   assert.match(html, /One card\./);
   assert.match(html, /\/brand\/card-plus-clean\.png/);
   assert.match(html, /\/brand\/card-supreme-clean\.png/);
+  assert.match(html, /data-testid="support-button"/);
+  assert.match(html, /aria-label="Contact SpendX support"/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton/i);
 });
 

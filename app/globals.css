@@ -1364,6 +1364,196 @@ input:focus-visible {
   box-shadow: 0 7px 18px rgba(48, 52, 168, 0.24);
 }
 
+.support-fab {
+  position: absolute;
+  z-index: 28;
+  right: 20px;
+  bottom: 96px;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  overflow: visible;
+  color: #2634aa;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    0 10px 28px rgba(18, 36, 78, 0.15),
+    inset 0 0 0 1px rgba(48, 52, 168, 0.05);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.support-fab > span {
+  position: absolute;
+  right: 57px;
+  padding: 7px 10px;
+  color: #fff;
+  border-radius: 9px;
+  background: rgba(10, 24, 63, 0.76);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(5px);
+  transition: 160ms ease;
+  white-space: nowrap;
+}
+
+.support-fab:hover,
+.support-fab:focus-visible {
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 14px 34px rgba(18, 36, 78, 0.2),
+    inset 0 0 0 1px rgba(48, 52, 168, 0.08);
+  transform: translateY(-2px);
+}
+
+.support-fab:hover > span,
+.support-fab:focus-visible > span {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.support-fab:active {
+  transform: scale(0.96);
+}
+
+.support-overlay {
+  position: absolute;
+  z-index: 40;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  background: rgba(6, 17, 43, 0.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: support-fade-in 180ms ease;
+}
+
+.support-panel {
+  width: 100%;
+  padding: 10px 18px 20px;
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 28px;
+  background: rgba(249, 251, 255, 0.96);
+  box-shadow: 0 24px 70px rgba(4, 15, 43, 0.28);
+  animation: support-panel-in 240ms cubic-bezier(0.2, 0.85, 0.2, 1);
+}
+
+.support-panel__grabber {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 12px;
+  border-radius: 99px;
+  background: #ccd5e3;
+}
+
+.support-panel__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.support-panel__icon,
+.support-panel__close {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 16px;
+}
+
+.support-panel__icon {
+  color: #3034a8;
+  background: linear-gradient(145deg, #edf0ff, #e6f0ff);
+}
+
+.support-panel__close {
+  color: #263247;
+  background: #edf2f8;
+}
+
+.support-panel .eyebrow {
+  margin: 0;
+}
+
+.support-panel h2 {
+  margin: 8px 0 7px;
+  font-size: 27px;
+  font-weight: 570;
+  letter-spacing: -0.04em;
+}
+
+.support-panel > p {
+  margin: 0 0 19px;
+  color: #66758b;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.support-panel__action {
+  width: 100%;
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  color: #fff;
+  text-align: left;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #3034a8, #1e63cf);
+  box-shadow: 0 12px 28px rgba(48, 52, 168, 0.2);
+}
+
+.support-panel__action > svg:first-child {
+  justify-self: center;
+}
+
+.support-panel__action span,
+.support-panel__action strong,
+.support-panel__action small {
+  display: block;
+}
+
+.support-panel__action strong {
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.support-panel__action small {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+@keyframes support-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes support-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
 .product-content {
   padding-top: 3px;
 }
@@ -2447,6 +2637,16 @@ input:focus-visible {
     width: min(calc(100vw - 32px), 402px);
     transform: translateX(-50%);
   }
+
+  .support-fab {
+    position: fixed;
+    right: max(18px, calc((100vw - 402px) / 2 + 18px));
+    bottom: max(91px, calc(env(safe-area-inset-bottom) + 83px));
+  }
+
+  .support-overlay {
+    position: fixed;
+  }
 }
 
 @media (max-width: 760px) {
@@ -2513,6 +2713,10 @@ input:focus-visible {
   .bottom-nav {
     height: 66px;
     border-radius: 22px;
+  }
+
+  .support-fab {
+    right: 18px;
   }
 
   .catalog-intro,
