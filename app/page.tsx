@@ -8,6 +8,7 @@ import {
   Bell,
   Check,
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
   CircleDollarSign,
   Clock,
@@ -20,6 +21,7 @@ import {
   Headphones,
   History,
   House,
+  Languages,
   Layers,
   LockKeyhole,
   LogOut,
@@ -40,10 +42,19 @@ import {
   type FormEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  createContext,
   useEffect,
+  useContext,
   useRef,
   useState,
 } from "react";
+import {
+  type CopyKey,
+  type LanguageCode,
+  languages,
+  resolveLanguage,
+  translations,
+} from "../lib/demo-i18n";
 
 type Screen =
   | "welcome"
@@ -57,6 +68,20 @@ type Screen =
   | "profile";
 
 type Sheet = "topup" | "send" | "history" | "settings" | null;
+
+const DemoI18nContext = createContext<{
+  language: LanguageCode;
+  t: (key: CopyKey) => string;
+}>({
+  language: "en",
+  t: (key) => translations.en[key],
+});
+
+function useDemoI18n() {
+  return useContext(DemoI18nContext);
+}
+
+const languageStorageKey = "spendx-demo-language";
 
 type Plan = {
   code: string;
@@ -234,22 +259,23 @@ function BottomNav({
   hasOrder: boolean;
   onNavigate: (screen: Screen) => void;
 }) {
+  const { t } = useDemoI18n();
   const items = [
     {
       id: "explore",
-      label: "Explore",
+      label: t("navExplore"),
       icon: House,
       screen: "catalog" as Screen,
     },
     {
       id: "cards",
-      label: "Cards",
+      label: t("navCards"),
       icon: CreditCard,
       screen: (hasOrder ? "tracking" : "catalog") as Screen,
     },
     {
       id: "profile",
-      label: "Profile",
+      label: t("navProfile"),
       icon: User,
       screen: "profile" as Screen,
     },
@@ -281,6 +307,79 @@ function BottomNav({
   );
 }
 
+function LanguagePicker({
+  isOpen,
+  onClose,
+  onSelect,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: (language: LanguageCode) => void;
+}) {
+  const { language, t } = useDemoI18n();
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="language-overlay"
+      data-testid="language-picker"
+      onClick={onClose}
+      role="presentation"
+    >
+      <section
+        aria-labelledby="language-picker-title"
+        aria-modal="true"
+        className="language-picker"
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+      >
+        <div className="language-picker__grabber" />
+        <div className="language-picker__header">
+          <div>
+            <span className="eyebrow">{t("language")}</span>
+            <h2 id="language-picker-title">{t("chooseLanguage")}</h2>
+          </div>
+          <button
+            aria-label="Close language picker"
+            className="language-picker__close"
+            onClick={onClose}
+            type="button"
+          >
+            <X aria-hidden="true" size={21} />
+          </button>
+        </div>
+        <p>{t("languagePickerDescription")}</p>
+        <div className="language-list">
+          {languages.map((option) => {
+            const selected = option.code === language;
+            return (
+              <button
+                aria-current={selected ? "true" : undefined}
+                className={selected ? "is-selected" : ""}
+                key={option.code}
+                onClick={() => onSelect(option.code)}
+                type="button"
+              >
+                <span aria-hidden="true" className="language-list__flag">
+                  {option.flag}
+                </span>
+                <span className="language-list__copy">
+                  <strong>{option.nativeName}</strong>
+                  <small>{option.badge}</small>
+                </span>
+                <span className="language-list__check">
+                  {selected && <Check aria-hidden="true" size={18} />}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function SupportAssist({
   hasBottomNavigation,
   isOpen,
@@ -292,6 +391,7 @@ function SupportAssist({
   onClose: () => void;
   onOpen: () => void;
 }) {
+  const { t } = useDemoI18n();
   const [position, setPosition] = useState<{ x: number; y: number } | null>(
     null,
   );
@@ -522,12 +622,9 @@ function SupportAssist({
                 <X aria-hidden="true" size={21} />
               </button>
             </div>
-            <span className="eyebrow">SpendX support</span>
-            <h2 id="support-title">How can we help?</h2>
-            <p>
-              Get help with verification, card orders, payments or your
-              account.
-            </p>
+            <span className="eyebrow">{t("supportEyebrow")}</span>
+            <h2 id="support-title">{t("supportTitle")}</h2>
+            <p>{t("supportBody")}</p>
             <button
               className="support-panel__action"
               onClick={onClose}
@@ -535,8 +632,8 @@ function SupportAssist({
             >
               <Send aria-hidden="true" size={19} />
               <span>
-                <strong>Start a conversation</strong>
-                <small>A specialist will respond in the support chat</small>
+                <strong>{t("supportAction")}</strong>
+                <small>{t("supportResponse")}</small>
               </span>
               <ChevronRight aria-hidden="true" size={20} />
             </button>
@@ -550,23 +647,42 @@ function SupportAssist({
 function WelcomeScreen({
   onCreate,
   onExplore,
+  onOpenLanguage,
 }: {
   onCreate: () => void;
   onExplore: () => void;
+  onOpenLanguage: () => void;
 }) {
+  const { language, t } = useDemoI18n();
+  const activeLanguage =
+    languages.find((option) => option.code === language) ?? languages[0];
+
   return (
     <section className="screen screen--welcome" data-testid="welcome-screen">
       <div className="welcome-orbit welcome-orbit--one" />
       <div className="welcome-orbit welcome-orbit--two" />
       <header className="welcome-header">
         <BrandMark />
-        <button
-          aria-label="Notifications"
-          className="icon-button icon-button--glass"
-          type="button"
-        >
-          <Bell size={19} />
-        </button>
+        <div className="welcome-header__actions">
+          <button
+            aria-label={t("chooseLanguage")}
+            className="language-trigger language-trigger--glass"
+            data-testid="language-trigger"
+            onClick={onOpenLanguage}
+            type="button"
+          >
+            <span aria-hidden="true">{activeLanguage.flag}</span>
+            <strong>{activeLanguage.badge}</strong>
+            <ChevronDown aria-hidden="true" size={14} />
+          </button>
+          <button
+            aria-label="Notifications"
+            className="icon-button icon-button--glass"
+            type="button"
+          >
+            <Bell size={19} />
+          </button>
+        </div>
       </header>
 
       <div aria-hidden="true" className="welcome-art">
@@ -582,19 +698,16 @@ function WelcomeScreen({
       <div className="welcome-copy">
         <span className="eyebrow eyebrow--light">
           <Sparkles size={14} />
-          Crypto made spendable
+          {t("welcomeEyebrow")}
         </span>
         <h1>
-          One card.
+          {t("welcomeLineOne")}
           <br />
-          One tap.
+          {t("welcomeLineTwo")}
           <br />
-          <em>Worldwide.</em>
+          <em>{t("welcomeLineThree")}</em>
         </h1>
-        <p>
-          Choose your plan, verify once and spend crypto wherever cards are
-          accepted.
-        </p>
+        <p>{t("welcomeDescription")}</p>
       </div>
 
       <div className="welcome-actions">
@@ -603,7 +716,7 @@ function WelcomeScreen({
           onClick={onCreate}
           type="button"
         >
-          Create account
+          {t("createAccount")}
           <ArrowRight size={19} />
         </button>
         <button
@@ -611,10 +724,10 @@ function WelcomeScreen({
           onClick={onExplore}
           type="button"
         >
-          Explore cards
+          {t("exploreCards")}
         </button>
       </div>
-      <p className="demo-caption">Interactive concept · Demo data only</p>
+      <p className="demo-caption">{t("demoCaption")}</p>
     </section>
   );
 }
@@ -760,18 +873,20 @@ function KycScreen({
 }
 
 function PlanStats({ plan }: { plan: Plan }) {
+  const { t } = useDemoI18n();
+
   return (
     <div className="plan-stats">
       <div>
-        <span>Daily limit</span>
+        <span>{t("dailyLimit")}</span>
         <strong>{plan.dailyLimit}</strong>
       </div>
       <div>
-        <span>Top-up fee</span>
+        <span>{t("topupFee")}</span>
         <strong>{plan.topupFee}</strong>
       </div>
       <div>
-        <span>Monthly</span>
+        <span>{t("monthly")}</span>
         <strong>{plan.monthlyLimit}</strong>
       </div>
     </div>
@@ -791,6 +906,7 @@ function CatalogScreen({
   onSelect: (index: number) => void;
   onNavigate: (screen: Screen) => void;
 }) {
+  const { t } = useDemoI18n();
   const plan = plans[activeIndex] ?? plans[0];
   const pointerStart = useRef<number | null>(null);
   const dragLimit = useRef(320);
@@ -860,7 +976,7 @@ function CatalogScreen({
   return (
     <section className="screen screen--light" data-testid="catalog-screen">
       <ScreenHeader
-        label="Explore cards"
+        label={t("exploreCards")}
         trailing={
           <button
             aria-label="Notifications"
@@ -874,9 +990,9 @@ function CatalogScreen({
       />
       <main className="screen-content catalog-content">
         <div className="catalog-intro">
-          <span className="eyebrow">Find your card</span>
-          <h2>Made for the way you spend.</h2>
-          <p>Five plans. Clear limits. One global payment experience.</p>
+          <span className="eyebrow">{t("catalogEyebrow")}</span>
+          <h2>{t("catalogTitle")}</h2>
+          <p>{t("catalogDescription")}</p>
         </div>
 
         <div aria-label="Card plans" className="plan-tabs" role="tablist">
@@ -993,11 +1109,13 @@ function CatalogScreen({
         <div className="plan-summary">
           <div className="plan-summary__heading">
             <div>
-              <span>{plan.tone} virtual card</span>
+              <span>
+                {plan.tone} {t("virtualCard")}
+              </span>
               <h3>SpendX {plan.name}</h3>
             </div>
             <div className="price-chip">
-              <small>Issue fee</small>
+              <small>{t("issueFee")}</small>
               <strong>{plan.issueFee}</strong>
             </div>
           </div>
@@ -1007,7 +1125,7 @@ function CatalogScreen({
             onClick={onOpenPlan}
             type="button"
           >
-            View plan
+            {t("viewPlan")}
             <ChevronRight size={19} />
           </button>
         </div>
@@ -1015,11 +1133,11 @@ function CatalogScreen({
         <div className="trust-row">
           <span>
             <ShieldCheck size={17} />
-            KYC protected
+            {t("kycProtected")}
           </span>
           <span>
             <WalletCards size={17} />
-            Crypto funded
+            {t("cryptoFunded")}
           </span>
         </div>
       </main>
@@ -1584,14 +1702,20 @@ function CardScreen({
 function ProfileScreen({
   hasOrder,
   onNavigate,
+  onOpenLanguage,
 }: {
   hasOrder: boolean;
   onNavigate: (screen: Screen) => void;
+  onOpenLanguage: () => void;
 }) {
+  const { language, t } = useDemoI18n();
+  const activeLanguage =
+    languages.find((option) => option.code === language) ?? languages[0];
+
   return (
     <section className="screen screen--light" data-testid="profile-screen">
       <ScreenHeader
-        label="Profile"
+        label={t("profileTitle")}
         trailing={
           <button
             aria-label="Settings"
@@ -1611,23 +1735,36 @@ function ProfileScreen({
           </div>
           <span className="status-pill status-pill--green">
             <Check size={13} />
-            Verified
+            {t("verified")}
           </span>
         </div>
 
         <div className="profile-section">
-          <span className="profile-section__label">Account</span>
+          <span className="profile-section__label">{t("account")}</span>
           <div className="profile-list">
+            <button onClick={onOpenLanguage} type="button">
+              <span className="profile-list__icon">
+                <Languages size={20} />
+              </span>
+              <span className="profile-list__copy">
+                <strong>{t("language")}</strong>
+                <small>{t("languageDescription")}</small>
+              </span>
+              <span className="profile-list__language">
+                <span aria-hidden="true">{activeLanguage.flag}</span>
+                <strong>{activeLanguage.badge}</strong>
+              </span>
+            </button>
             <button type="button">
               <span className="profile-list__icon profile-list__icon--verified">
                 <BadgeCheck size={20} />
               </span>
               <span className="profile-list__copy">
-                <strong>Identity verification</strong>
-                <small>Your identity check is complete</small>
+                <strong>{t("identityVerification")}</strong>
+                <small>{t("identityComplete")}</small>
               </span>
               <span className="profile-list__meta profile-list__meta--verified">
-                Approved
+                {t("approved")}
               </span>
             </button>
             <button type="button">
@@ -1635,8 +1772,8 @@ function ProfileScreen({
                 <ShieldCheck size={20} />
               </span>
               <span className="profile-list__copy">
-                <strong>Security</strong>
-                <small>Password, PIN and trusted devices</small>
+                <strong>{t("security")}</strong>
+                <small>{t("securityDescription")}</small>
               </span>
               <ChevronRight size={18} />
             </button>
@@ -1646,7 +1783,7 @@ function ProfileScreen({
               </span>
               <span className="profile-list__copy">
                 <strong>Face ID</strong>
-                <small>Approve access with biometrics</small>
+                <small>{t("faceIdDescription")}</small>
               </span>
               <span className="toggle is-on" />
             </button>
@@ -1654,15 +1791,15 @@ function ProfileScreen({
         </div>
 
         <div className="profile-section">
-          <span className="profile-section__label">Support</span>
+          <span className="profile-section__label">{t("supportSection")}</span>
           <div className="profile-list">
             <button type="button">
               <span className="profile-list__icon">
                 <Headphones size={20} />
               </span>
               <span className="profile-list__copy">
-                <strong>Contact support</strong>
-                <small>Get help from the SpendX team</small>
+                <strong>{t("contactSupport")}</strong>
+                <small>{t("contactSupportDescription")}</small>
               </span>
               <ChevronRight size={18} />
             </button>
@@ -1671,8 +1808,8 @@ function ProfileScreen({
                 <FileText size={20} />
               </span>
               <span className="profile-list__copy">
-                <strong>Legal & privacy</strong>
-                <small>Policies, terms and data controls</small>
+                <strong>{t("legalPrivacy")}</strong>
+                <small>{t("legalDescription")}</small>
               </span>
               <ChevronRight size={18} />
             </button>
@@ -1685,7 +1822,7 @@ function ProfileScreen({
           type="button"
         >
           <LogOut size={18} />
-          <span>Sign out of demo</span>
+          <span>{t("signOut")}</span>
         </button>
       </main>
       <BottomNav active="profile" hasOrder={hasOrder} onNavigate={onNavigate} />
@@ -1698,11 +1835,27 @@ export default function Home() {
   const [activePlanIndex, setActivePlanIndex] = useState(3);
   const [hasOrder, setHasOrder] = useState(false);
   const [orderedPlanIndex, setOrderedPlanIndex] = useState<number | null>(null);
+  const [language, setLanguage] = useState<LanguageCode>("en");
+  const [languageOpen, setLanguageOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const frameRef = useRef<HTMLDivElement>(null);
 
   const activePlan = plans[activePlanIndex] ?? plans[3];
   const orderedPlan = plans[orderedPlanIndex ?? activePlanIndex] ?? plans[3];
+  const t = (key: CopyKey) => translations[language][key];
+
+  useEffect(() => {
+    const storedLanguage = resolveLanguage(
+      window.localStorage.getItem(languageStorageKey),
+    );
+    const browserLanguage = navigator.languages
+      .map((candidate) => resolveLanguage(candidate))
+      .find((candidate): candidate is LanguageCode => Boolean(candidate));
+    const nextLanguage = storedLanguage ?? browserLanguage ?? "en";
+
+    setLanguage(nextLanguage);
+    document.documentElement.lang = nextLanguage;
+  }, []);
 
   useEffect(() => {
     const currentScreen = frameRef.current?.querySelector<HTMLElement>(".screen");
@@ -1710,8 +1863,16 @@ export default function Home() {
   }, [screen]);
 
   const navigate = (next: Screen) => {
+    setLanguageOpen(false);
     setSupportOpen(false);
     setScreen(next);
+  };
+
+  const selectLanguage = (nextLanguage: LanguageCode) => {
+    setLanguage(nextLanguage);
+    window.localStorage.setItem(languageStorageKey, nextLanguage);
+    document.documentElement.lang = nextLanguage;
+    setLanguageOpen(false);
   };
 
   const goBack = () => navigate(backMap[screen] ?? "welcome");
@@ -1732,7 +1893,8 @@ export default function Home() {
   ];
 
   return (
-    <main className="preview-canvas">
+    <DemoI18nContext.Provider value={{ language, t }}>
+      <main className="preview-canvas">
       <div className="preview-aura preview-aura--left" />
       <div className="preview-aura preview-aura--right" />
       <aside aria-label="Concept information" className="preview-context">
@@ -1777,6 +1939,7 @@ export default function Home() {
               <WelcomeScreen
                 onCreate={() => navigate("signup")}
                 onExplore={() => navigate("catalog")}
+                onOpenLanguage={() => setLanguageOpen(true)}
               />
             )}
             {screen === "signup" && (
@@ -1830,10 +1993,19 @@ export default function Home() {
               />
             )}
             {screen === "profile" && (
-              <ProfileScreen hasOrder={hasOrder} onNavigate={navigate} />
+              <ProfileScreen
+                hasOrder={hasOrder}
+                onNavigate={navigate}
+                onOpenLanguage={() => setLanguageOpen(true)}
+              />
             )}
           </div>
 
+          <LanguagePicker
+            isOpen={languageOpen}
+            onClose={() => setLanguageOpen(false)}
+            onSelect={selectLanguage}
+          />
           <SupportAssist
             hasBottomNavigation={[
               "catalog",
@@ -1852,6 +2024,7 @@ export default function Home() {
         <span className={hasOrder ? "is-live" : ""} />
         {hasOrder ? "Demo order created" : "Interactive preview"}
       </div>
-    </main>
+      </main>
+    </DemoI18nContext.Provider>
   );
 }

@@ -66,3 +66,25 @@ test("support control opens on tap and moves after a long press", async () => {
   assert.match(css, /\.support-fab\s*\{[^}]*touch-action:\s*none;/s);
   assert.match(css, /\.support-fab\.is-dragging/);
 });
+
+test("language picker supports and persists the initial seven languages", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const i18n = await readFile(
+    new URL("../lib/demo-i18n.ts", import.meta.url),
+    "utf8",
+  );
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(page, /data-testid="language-trigger"/);
+  assert.match(page, /data-testid="language-picker"/);
+  assert.match(page, /spendx-demo-language/);
+  assert.match(page, /window\.localStorage\.setItem/);
+  assert.match(page, /document\.documentElement\.lang/);
+
+  for (const code of ["en", "ru", "uk", "es", "fr", "de", "lv"]) {
+    assert.match(i18n, new RegExp(`code: "${code}"`));
+  }
+
+  assert.match(css, /\.language-picker\s*\{/);
+  assert.match(css, /\.language-list > button\.is-selected/);
+});
