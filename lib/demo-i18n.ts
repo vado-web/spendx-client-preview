@@ -1,4 +1,13 @@
-export type LanguageCode = "en" | "ru" | "uk" | "es" | "fr" | "de" | "lv";
+export type LanguageCode =
+  | "en"
+  | "ru"
+  | "uk"
+  | "es"
+  | "pt-BR"
+  | "fr"
+  | "de"
+  | "tr"
+  | "lv";
 
 export type LanguageOption = {
   badge: string;
@@ -12,8 +21,15 @@ export const languages: LanguageOption[] = [
   { badge: "RU", code: "ru", flag: "🇷🇺", nativeName: "Русский" },
   { badge: "UA", code: "uk", flag: "🇺🇦", nativeName: "Українська" },
   { badge: "ES", code: "es", flag: "🇪🇸", nativeName: "Español" },
+  {
+    badge: "BR",
+    code: "pt-BR",
+    flag: "🇧🇷",
+    nativeName: "Português (Brasil)",
+  },
   { badge: "FR", code: "fr", flag: "🇫🇷", nativeName: "Français" },
   { badge: "DE", code: "de", flag: "🇩🇪", nativeName: "Deutsch" },
+  { badge: "TR", code: "tr", flag: "🇹🇷", nativeName: "Türkçe" },
   { badge: "LV", code: "lv", flag: "🇱🇻", nativeName: "Latviešu" },
 ];
 
@@ -339,6 +355,112 @@ export const translations: Record<LanguageCode, LanguageCopy> = {
     welcomeLineThree: "Weltweit.",
     welcomeLineTwo: "Ein Tipp.",
   },
+  "pt-BR": {
+    ...english,
+    account: "Conta",
+    approved: "Aprovado",
+    catalogDescription:
+      "Cinco planos. Limites claros. Uma experiência de pagamento global.",
+    catalogEyebrow: "Encontre seu cartão",
+    catalogTitle: "Feito para a sua forma de gastar.",
+    chooseLanguage: "Escolha seu idioma",
+    contactSupport: "Falar com o suporte",
+    contactSupportDescription: "Receba ajuda da equipe SpendX",
+    createAccount: "Criar conta",
+    cryptoFunded: "Carregado com cripto",
+    dailyLimit: "Limite diário",
+    demoCaption: "Conceito interativo · Dados de demonstração",
+    exploreCards: "Explorar cartões",
+    faceIdDescription: "Autorize o acesso com biometria",
+    identityComplete: "Sua verificação de identidade foi concluída",
+    identityVerification: "Verificação de identidade",
+    issueFee: "Taxa de emissão",
+    kycProtected: "Protegido por KYC",
+    language: "Idioma",
+    languageDescription: "Selecione o idioma usado no SpendX",
+    languagePickerDescription:
+      "Você pode alterar o idioma a qualquer momento. Sua escolha fica salva neste dispositivo.",
+    legalDescription: "Políticas, termos e controles de dados",
+    legalPrivacy: "Termos legais e privacidade",
+    monthly: "Mensal",
+    navCards: "Cartões",
+    navExplore: "Explorar",
+    navProfile: "Perfil",
+    profileTitle: "Perfil",
+    security: "Segurança",
+    securityDescription: "Senha, PIN e dispositivos confiáveis",
+    signOut: "Sair da demonstração",
+    supportAction: "Iniciar uma conversa",
+    supportBody:
+      "Receba ajuda com verificação, pedidos de cartão, pagamentos ou sua conta.",
+    supportEyebrow: "Suporte SpendX",
+    supportResponse: "Um especialista responderá no chat de suporte",
+    supportSection: "Suporte",
+    supportTitle: "Como podemos ajudar?",
+    topupFee: "Taxa de recarga",
+    verified: "Verificado",
+    viewPlan: "Ver plano",
+    virtualCard: "cartão virtual",
+    welcomeDescription:
+      "Escolha seu plano, verifique sua identidade uma vez e use cripto onde cartões são aceitos.",
+    welcomeEyebrow: "Cripto pronta para gastar",
+    welcomeLineOne: "Um cartão.",
+    welcomeLineThree: "No mundo todo.",
+    welcomeLineTwo: "Um toque.",
+  },
+  tr: {
+    ...english,
+    account: "Hesap",
+    approved: "Onaylandı",
+    catalogDescription:
+      "Beş plan. Net limitler. Tek bir global ödeme deneyimi.",
+    catalogEyebrow: "Kartınızı bulun",
+    catalogTitle: "Harcama tarzınıza göre tasarlandı.",
+    chooseLanguage: "Dilinizi seçin",
+    contactSupport: "Destekle iletişime geçin",
+    contactSupportDescription: "SpendX ekibinden yardım alın",
+    createAccount: "Hesap oluştur",
+    cryptoFunded: "Kripto ile finanse edilir",
+    dailyLimit: "Günlük limit",
+    demoCaption: "Etkileşimli konsept · Yalnızca demo verileri",
+    exploreCards: "Kartları keşfet",
+    faceIdDescription: "Biyometrik erişimi onaylayın",
+    identityComplete: "Kimlik doğrulamanız tamamlandı",
+    identityVerification: "Kimlik doğrulama",
+    issueFee: "Kart çıkarma ücreti",
+    kycProtected: "KYC korumalı",
+    language: "Dil",
+    languageDescription: "SpendX'te kullanılacak dili seçin",
+    languagePickerDescription:
+      "Dili istediğiniz zaman değiştirebilirsiniz. Seçiminiz bu cihazda kaydedilir.",
+    legalDescription: "Politikalar, şartlar ve veri kontrolleri",
+    legalPrivacy: "Yasal bilgiler ve gizlilik",
+    monthly: "Aylık",
+    navCards: "Kartlar",
+    navExplore: "Keşfet",
+    navProfile: "Profil",
+    profileTitle: "Profil",
+    security: "Güvenlik",
+    securityDescription: "Şifre, PIN ve güvenilir cihazlar",
+    signOut: "Demodan çık",
+    supportAction: "Görüşme başlat",
+    supportBody:
+      "Doğrulama, kart siparişleri, ödemeler veya hesabınızla ilgili yardım alın.",
+    supportEyebrow: "SpendX desteği",
+    supportResponse: "Bir uzman destek sohbetinde yanıt verecek",
+    supportSection: "Destek",
+    supportTitle: "Nasıl yardımcı olabiliriz?",
+    topupFee: "Yükleme ücreti",
+    verified: "Doğrulandı",
+    viewPlan: "Planı görüntüle",
+    virtualCard: "sanal kart",
+    welcomeDescription:
+      "Planınızı seçin, bir kez doğrulanın ve kartların kabul edildiği her yerde kripto harcayın.",
+    welcomeEyebrow: "Harcanabilir kripto",
+    welcomeLineOne: "Tek kart.",
+    welcomeLineThree: "Dünya çapında.",
+    welcomeLineTwo: "Tek dokunuş.",
+  },
   lv: {
     ...english,
     account: "Konts",
@@ -396,6 +518,12 @@ export const translations: Record<LanguageCode, LanguageCopy> = {
 
 export function resolveLanguage(value: string | null | undefined) {
   if (!value) return undefined;
-  const normalized = value.toLowerCase().split("-")[0];
-  return languages.find((language) => language.code === normalized)?.code;
+  const normalized = value.trim().toLowerCase().replace("_", "-");
+
+  if (normalized === "pt" || normalized.startsWith("pt-br")) return "pt-BR";
+
+  const primaryLanguage = normalized.split("-")[0];
+  return languages.find(
+    (language) => language.code.toLowerCase() === primaryLanguage,
+  )?.code;
 }
