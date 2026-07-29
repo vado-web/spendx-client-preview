@@ -101,3 +101,14 @@ test("language picker supports and persists the available languages", async () =
   assert.match(css, /\.language-picker\s*\{/);
   assert.match(css, /\.language-list > button\.is-selected/);
 });
+
+test("keeps card names and issue-fee labels on one line", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+
+  assert.match(
+    css,
+    /\.plan-summary__heading h3\s*\{[^}]*white-space:\s*nowrap;/s,
+  );
+  assert.match(css, /\.price-chip small\s*\{[^}]*white-space:\s*nowrap;/s);
+  assert.match(css, /\.price-chip\s*\{[^}]*flex:\s*0 0 auto;/s);
+});

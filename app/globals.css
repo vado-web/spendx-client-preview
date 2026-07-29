@@ -1271,11 +1271,20 @@ input:focus-visible {
   margin-bottom: 14px;
 }
 
+.plan-summary__heading > div:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .plan-summary__heading h3,
 .product-title h2 {
   margin: 0;
   font-size: 25px;
   letter-spacing: -0.03em;
+}
+
+.plan-summary__heading h3 {
+  white-space: nowrap;
 }
 
 .plan-summary__heading p {
@@ -1285,6 +1294,7 @@ input:focus-visible {
 }
 
 .price-chip {
+  flex: 0 0 auto;
   min-width: 68px;
   padding: 8px 10px;
   border: 1px solid rgba(48, 52, 168, 0.13);
@@ -1295,8 +1305,15 @@ input:focus-visible {
 }
 
 .price-chip strong,
+.price-chip small,
 .price-chip span {
   display: block;
+}
+
+.price-chip small {
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .price-chip strong {
